@@ -3,7 +3,7 @@ require(haven)
 
 if(Sys.info()["user"]=="JVARGH7"){
   path_g2a_data <- "C:/Cloud/OneDrive - Emory University/data/G2Aging"
-  path_g2a_family_folder <- "C:/Cloud/OneDrive - Emory University/Papers/India Family Clustering"
+  path_g2a_family_folder <- "C:/Cloud/OneDrive - Emory University/Papers/Crossnational Family Clustering"
 }
 
 options(survey.adjust.domain.lonely=TRUE)

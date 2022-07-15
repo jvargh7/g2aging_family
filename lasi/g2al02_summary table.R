@@ -9,12 +9,12 @@ continuous_vars <- c(paste0(rep(c("w_","h_"),each=13),
                             "moderate_pa","vigorous_pa")),
                      "hh_size","hh_wealth","hh_income","hh_consumption")
 
-proportion_vars <- paste0(rep(c("w_","h_"),each=16),
+proportion_vars <- c(paste0(rep(c("w_","h_"),each=16),
                           c("screened_bp","diagnosed_bp","medication_bp",
                             "fasting","screened_dm","diagnosed_dm","medication_dm",
                             
                             "pregnant","employment","retirement","smokeever","smokecurr","alcohol",
-                            "insurance","dm","htn"))
+                            "insurance","dm","htn")),"residence")
 
 grouped_vars <- c("w_education","w_education_h","h_education","h_education_h","in_caste","in_religion","hh_wealthquintile","hh_consumptionquintile","hh_incometertile")
 
