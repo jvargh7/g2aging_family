@@ -18,6 +18,7 @@ proportion_vars <- c(paste0(rep(c("w_","h_"),each=16),
 
 grouped_vars <- c("w_education","w_education_h","h_education","h_education_h","in_caste","in_religion","hh_wealthquintile","hh_consumptionquintile","hh_incometertile")
 
+
 couples_svy <- couples %>% 
   as_survey_design(.data = .,
                    ids = psu,strata = state,
@@ -26,9 +27,9 @@ couples_svy <- couples %>%
                    variance = "YG",pps = "brewer")
 
 couples_svysummary <- svysummary(couples_svy,
-                                 continuous_vars,
-                                 proportion_vars,
-                                 grouped_vars) %>% 
+                                 c_vars = continuous_vars,
+                                 p_vars = proportion_vars,
+                                 g_vars = grouped_vars) %>% 
   mutate_at(vars(estimate,lci,uci),~round(.,1)) %>% 
   mutate(est_ci = paste0(estimate," (",
                          lci,", ",uci,")"))
