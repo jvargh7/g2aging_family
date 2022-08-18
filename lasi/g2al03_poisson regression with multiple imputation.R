@@ -45,9 +45,10 @@ overall_h3_out = mice_coef_svyglm(overall_h3)
 
 
 source("C:/code/external/functions/survey/mice_contrasts_svyglm.R")
+# Check: https://github.com/jvargh7/functions/blob/main/survey/mice_contrasts_svyglm.R
 # You would also have to download the following:
-# source("C:/code/external/functions/preprocessing/prepare_contrasts.R")
-# source("C:/code/external/functions/survey/contrasts_svyglm.R")
+# source("https://github.com/jvargh7/functions/blob/main/preprocessing/prepare_contrasts.R")
+# source("https://github.com/jvargh7/functions/blob/main/survey/contrasts_svyglm.R")
 # The coefficients are in column 'RR'. The rest of the columns are for pooling multiple imputated regressions
 
 contrasts_w2_out = mice_contrasts_svyglm(svymodel_list = overall_w2,modifier = "w_ge65",exposure = "h_htn")
