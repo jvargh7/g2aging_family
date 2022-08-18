@@ -32,16 +32,16 @@ before_imputation <- couples %>%
                  w_retirement,h_retirement,residence),~as.numeric(.)) %>% 
   # Step 1: One hot encoding
   mutate(
-         w_education_2 = case_when(w_education_h == "upper secondary and vocational training" ~ 1,
+         w_education_2 = case_when(w_education_h == "Upper secondary and vocational training" ~ 1,
                                    !is.na(w_education_h) ~ 0,
                                    TRUE ~ NA_real_),
-         w_education_3 = case_when(w_education_h == "tertiary" ~ 1,
+         w_education_3 = case_when(w_education_h == "Tertiary" ~ 1,
                                    !is.na(w_education_h) ~ 0,
                                    TRUE ~ NA_real_),
-         h_education_2 = case_when(h_education_h == "upper secondary and vocational training" ~ 1,
+         h_education_2 = case_when(h_education_h == "Upper secondary and vocational training" ~ 1,
                                    !is.na(h_education_h) ~ 0,
                                    TRUE ~ NA_real_),
-         h_education_3 = case_when(h_education_h == "tertiary" ~ 1,
+         h_education_3 = case_when(h_education_h == "Tertiary" ~ 1,
                                    !is.na(h_education_h) ~ 0,
                                    TRUE ~ NA_real_),
          

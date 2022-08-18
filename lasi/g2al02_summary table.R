@@ -6,21 +6,22 @@ couples <- readRDS(paste0(path_g2a_family_folder,"/working/G2A LASI Couples.RDS"
                  h_smokeever,h_smokecurr,h_insurance),function(x) case_when(is.na(x) ~ 0,
                                                                             TRUE ~ x))
 
-continuous_vars <- c(paste0(rep(c("w_","h_"),each=13),
+continuous_vars <- c(paste0(rep(c("w_","h_"),each=14),
                           c("sbp","dbp","glucose","weight","height",
                             "bmi","waistcircumference","hipcircumference",
-                            "age","eduyr","children",
+                            "age","eduyr","children","lengthmar",
                             "moderate_pa","vigorous_pa")),
-                     "hh_size","hh_wealth","hh_income","hh_consumption")
+                     "hh_size","hh_wealth","hh_income","hh_consumption","hh_lengthmar")
 
-proportion_vars <- c(paste0(rep(c("w_","h_"),each=16),
+proportion_vars <- c(paste0(rep(c("w_","h_"),each=17),
                           c("screened_bp","diagnosed_bp","medication_bp",
                             "fasting","screened_dm","diagnosed_dm","medication_dm",
                             
-                            "pregnant","employment","retirement","smokeever","smokecurr","alcohol",
-                            "insurance","dm","htn")),"residence")
+                            "pregnant","employment","retirement","smokeever","smokecurr","alcohol","lengthmar_ge10",
+                            "insurance","dm","htn")),"residence","hh_lengthmar_ge10")
 
-grouped_vars <- c("w_education","w_education_h","h_education","h_education_h","in_caste","in_religion","hh_wealthquintile","hh_consumptionquintile","hh_incometertile")
+grouped_vars <- c("w_education","w_education_h","h_education","h_education_h","in_caste","in_religion",
+                  "hh_wealthquintile","hh_consumptionquintile","hh_incometertile")
 
 
 couples_svy <- couples  %>% 

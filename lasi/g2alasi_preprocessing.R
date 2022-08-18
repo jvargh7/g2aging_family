@@ -151,8 +151,8 @@ g2alasi_preprocessing <- function(df){
                                                     TRUE ~ NA_character_)) %>% 
     # Education - harmonized
     mutate_at(vars(education_h),function(x) case_when(x == 1 ~ "Less than lower secondary",
-                                                    x == 2 ~ "upper secondary and vocational training",
-                                                    x == 3 ~ "tertiary",
+                                                    x == 2 ~ "Upper secondary and vocational training",
+                                                    x == 3 ~ "Tertiary",
                                                     TRUE ~ NA_character_)) %>% 
     
     # Religion
@@ -243,7 +243,11 @@ g2alasi_preprocessing <- function(df){
                               TRUE ~ NA_real_
            ),
            waist_hip = case_when(!is.na(hipcircumference) ~ waistcircumference/hipcircumference,
-                                 TRUE ~ NA_real_)
+                                 TRUE ~ NA_real_),
+           
+           lengthmar_ge10 = case_when(lengthmar >= 10 ~ 1,
+                                      lengthmar < 10 ~ 0,
+                                      TRUE ~ NA_real_)
     ) %>% 
     
     mutate(bmi_category = factor(bmi_category,levels=c(1:4),labels=c("Underweight","Normal","Overweight","Obese")),

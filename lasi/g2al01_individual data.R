@@ -58,11 +58,11 @@ hh_quintiles <- couples %>%
   distinct(hhid,.keep_all=TRUE) %>% 
   dplyr::select(starts_with("hh")) %>% 
   mutate_at(vars(hh_income),
-            function(x) cut(x,breaks=c(wtd.quantile(x,weights=.data$hhweight,probs = c(0,0.33,0.67,1.0))),right=TRUE,include.lowest=TRUE,
+            function(x) cut(x,breaks=c(wtd.quantile(x,weights=.$hhweight,probs = c(0,0.33,0.67,1.0))),right=TRUE,include.lowest=TRUE,
                             labels=c("Low","Medium","High"))) %>% 
   
   mutate_at(vars(hh_wealth,hh_consumption),
-            function(x) cut(x,breaks=c(wtd.quantile(x,weights=.data$hhweight,probs = seq(0,1,by=0.2))),right=TRUE,include.lowest=TRUE,
+            function(x) cut(x,breaks=c(wtd.quantile(x,weights=.$hhweight,probs = seq(0,1,by=0.2))),right=TRUE,include.lowest=TRUE,
                             labels=c("Lowest","Low","Medium","High","Highest"))) %>% 
   rename_at(vars(hh_wealth,hh_consumption),~paste0(.,"quintile")) %>% 
   rename(hh_incometertile = hh_income)
@@ -88,7 +88,7 @@ couples_hh %>%
                 w_personid, w_sbp, w_dbp,w_htn,
                 w_diagnosed_bp, w_medication_bp, w_diagnosed_dm, w_medication_dm,
                 w_weight, w_height, w_bmi, w_waistcircumference, w_hipcircumference,
-                w_age,w_sex,w_education,
+                w_age,w_sex,w_education,w_lengthmar,w_lengthmar_ge10,
                 w_education_h, w_marital, w_employment, w_retirement, w_smokeever, w_smokecurr,
                 w_alcohol, w_moderate_pa, w_vigorous_pa,
                 w_children, w_insurance, 
@@ -96,7 +96,7 @@ couples_hh %>%
                 h_personid, h_sbp, h_dbp,h_htn,
                 h_diagnosed_bp, h_medication_bp, h_diagnosed_dm, h_medication_dm,
                 h_weight, h_height, h_bmi, h_waistcircumference, h_hipcircumference,
-                h_age,h_sex,h_education,
+                h_age,h_sex,h_education,h_lengthmar,h_lengthmar_ge10,
                 h_education_h, h_marital, h_employment, h_retirement, h_smokeever, h_smokecurr,
                 h_alcohol, h_moderate_pa, h_vigorous_pa,
                 h_children, h_insurance 
@@ -110,6 +110,11 @@ couples_hh %>%
   mutate(psu = zoo::na.locf(psu)) %>% 
   # dplyr::select(hhid,h_personid,w_personid,psu,hhweight) %>% View() %>% 
   distinct(coupleid,.keep_all=TRUE) %>% 
+  mutate(hh_lengthmar = case_when(!is.na(h_lengthmar) ~ h_lengthmar,
+                                  TRUE ~ w_lengthmar),
+         hh_lengthmar_ge10 = case_when(!is.na(h_lengthmar_ge10) ~ h_lengthmar_ge10,
+                                       TRUE ~ w_lengthmar_ge10)) %>%
+  mutate_at(vars(h_height,w_height),function(x) x*100) %>% 
 saveRDS(.,paste0(path_g2a_family_folder,"/working/G2A LASI Couples.RDS"))  
 
 
