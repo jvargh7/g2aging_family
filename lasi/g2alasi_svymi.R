@@ -9,14 +9,14 @@ continuous_vars <- c(paste0(rep(c("w_","h_"),each=13),
                               "bmi","waistcircumference","hipcircumference",
                               "age","eduyr","children",
                               "moderate_pa","vigorous_pa")),
-                     "hh_size")
+                     "hh_size","hh_lengthmar")
 
 proportion_vars <- c(paste0(rep(c("w_","h_"),each=16),
                             c("screened_bp","diagnosed_bp","medication_bp",
                               "screened_dm","diagnosed_dm","medication_dm",
                               
                               "employment","retirement","smokeever","smokecurr","alcohol",
-                              "insurance","htn")),"residence")
+                              "insurance","htn")),"residence","hh_lengthmar_ge10")
 
 grouped_vars <- c("w_education_h","h_education_h","in_caste","in_religion","hh_wealthquintile","hh_consumptionquintile","hh_incometertile")
 
@@ -29,7 +29,7 @@ before_imputation <- couples %>%
                 one_of(continuous_vars),one_of(proportion_vars),one_of(grouped_vars)) %>% 
   mutate_at(vars(state,w_moderate_pa,w_vigorous_pa,
                  h_moderate_pa,h_vigorous_pa,
-                 w_retirement,h_retirement,residence),~as.numeric(.)) %>% 
+                 w_retirement,h_retirement,residence,hh_lengthmar),~as.numeric(.)) %>% 
   # Step 1: One hot encoding
   mutate(
          w_education_2 = case_when(w_education_h == "Upper secondary and vocational training" ~ 1,
@@ -76,6 +76,10 @@ before_imputation <- couples %>%
          w_htn_h_ge65 = h_ge65*w_htn,
          h_htn_w_ge65 = w_ge65*h_htn,
          
+         # Since exposure is w_htn and effect modifier is length of marriage (<10 vs >=10)
+         w_htn_hh_lengthmar_ge10 = hh_lengthmar_ge10*w_htn,
+         h_htn_hh_lengthmar_ge10 = hh_lengthmar_ge10*h_htn,
+         
          # Since exposure is w_htn and effect modifier is household wealth quintile
          w_htn_hh_low = w_htn*hh_low,
          w_htn_hh_medium = w_htn*hh_medium,
@@ -88,13 +92,14 @@ before_imputation <- couples %>%
          h_htn_hh_highest = h_htn*hh_highest
          ) %>% 
   dplyr::select(-w_education_h,-h_education_h,
-                -hh_wealthquintile,-hh_wealth,-hh_income,-hh_consumption)
+                -hh_wealthquintile)
 
 
 interaction_terms <- c("w_htn_residence","h_htn_residence",
                        "w_htn_h_education_2","w_htn_h_education_3",
                        "h_htn_w_education_2","h_htn_w_education_3",
                        "w_htn_h_ge65","h_htn_w_ge65",
+                       "w_htn_hh_lengthmar_ge10","h_htn_hh_lengthmar_ge10",
                        "w_htn_hh_low","w_htn_hh_medium","w_htn_hh_high","w_htn_hh_highest",
                        "h_htn_hh_low","h_htn_hh_medium","h_htn_hh_high","h_htn_hh_highest"
                        )
@@ -111,6 +116,10 @@ pred[,c("coupleid","hhid","w_personid","h_personid","h_sampleweight","state","ps
 pred[c("w_htn","h_htn"),] <-0
 pred[,c("w_htn","h_htn")] <-0
 
+method["hh_lengthmar_ge10"] <- "~I((hh_lengthmar>=10)*1)"
+pred["hh_lengthmar_ge10",] <- 0
+pred[,"hh_lengthmar_ge10"] <- 0
+
 # https://stackoverflow.com/questions/33865161/model-multiple-imputation-with-interaction-terms
 # https://thestatsgeek.com/2014/05/10/multiple-imputation-with-interactions-and-non-linear-terms/
 
@@ -123,10 +132,10 @@ for(i_t in interaction_terms){
 }
 
 
-# Takes ~30 mins
+# Takes ~4h
 mi_dfs <- mice(before_imputation,
                method = method,
                pred = pred,
                m=10,maxit=50,seed=500)
 
-saveRDS(mi_dfs, paste0(path_g2a_family_folder,"/working/G2A LASI Couples mi_dfs.RDS"))
+saveRDS(mi_dfs, paste0(path_g2a_family_folder,"/working/G2A LASI Couples mi_dfs_updated.RDS"))
