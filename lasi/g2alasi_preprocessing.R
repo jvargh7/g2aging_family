@@ -118,9 +118,11 @@ g2alasi_preprocessing <- function(df){
            
 
     ) %>% 
-    mutate(employment = case_when(employment == 0 ~ 0,
-                                  employment == 0 ~ 1,
+    mutate(laborforce = case_when(retirement == 1 ~ 2,
+                                  employment == 1 ~ 1,
+                                  employment == 0 ~ 0,
                                   TRUE ~ NA_real_)) %>% 
+    mutate(laborforce = factor(laborforce,levels=c(0:2),labels=c("None","Formal","Retired"))) %>% 
     
     mutate_at(vars(insurance,diagnosed_bp,medication_bp,
                    diagnosed_dm,medication_dm), function(x) case_when(x== 2 ~ 0,
@@ -142,7 +144,8 @@ g2alasi_preprocessing <- function(df){
                                                    x == 2 ~ "Scheduled Tribe",
                                                    x == 3 ~ "OBC",
                                                    x == 4 ~ "General",
-                                                   TRUE ~ NA_character_)) %>% 
+                                                   # Imputing missing with General
+                                                   TRUE ~ "General")) %>% 
     # Education
     mutate_at(vars(education),function(x) case_when(x == 10 ~ "No education",
                                                     x == 11 ~ "Primary",
@@ -171,6 +174,12 @@ g2alasi_preprocessing <- function(df){
     mutate(smokecount = case_when(smokecount >= 30 ~ 30,
                                   TRUE ~ smokecount)) %>% 
     
+    mutate(smoke = case_when(smokecurr == 1 ~ 2,
+                             smokeever == 1 ~ 1,
+                             smokeever == 0 ~ 0, 
+                             smokecurr == 0 ~ 0,
+                             TRUE ~ 0)) %>% 
+    mutate(smoke = factor(smoke,levels=c(0:2),labels=c("Never","Former","Current"))) %>% 
     mutate(htn_disease = case_when(is.na(htn_free) ~ NA_real_,
                                    htn_free == 1 ~ 0,
                                    htn_undiag_uncontr == 1 ~ 1,

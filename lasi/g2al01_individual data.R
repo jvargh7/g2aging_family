@@ -89,16 +89,18 @@ couples_hh %>%
                 w_diagnosed_bp, w_medication_bp, w_diagnosed_dm, w_medication_dm,
                 w_weight, w_height, w_bmi, w_waistcircumference, w_hipcircumference,
                 w_age,w_sex,w_education,w_lengthmar,w_lengthmar_ge10,
-                w_education_h, w_marital, w_employment, w_retirement, w_smokeever, w_smokecurr,
-                w_alcohol, w_moderate_pa, w_vigorous_pa,
+                w_eduyr,w_education_h, w_marital, w_employment, w_retirement,w_laborforce, 
+                w_smokeever, w_smokecurr, w_smoke,
+                w_alcohol,w_heavydrinker, w_moderate_pa, w_vigorous_pa,
                 w_children, w_insurance, 
                 
                 h_personid, h_sbp, h_dbp,h_htn,
                 h_diagnosed_bp, h_medication_bp, h_diagnosed_dm, h_medication_dm,
                 h_weight, h_height, h_bmi, h_waistcircumference, h_hipcircumference,
                 h_age,h_sex,h_education,h_lengthmar,h_lengthmar_ge10,
-                h_education_h, h_marital, h_employment, h_retirement, h_smokeever, h_smokecurr,
-                h_alcohol, h_moderate_pa, h_vigorous_pa,
+                h_eduyr, h_education_h, h_marital, h_employment, h_retirement,h_laborforce,
+                h_smokeever, h_smokecurr, h_smoke,
+                h_alcohol, h_heavydrinker, h_moderate_pa, h_vigorous_pa,
                 h_children, h_insurance 
                 
                 

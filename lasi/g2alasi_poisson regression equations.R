@@ -1,8 +1,8 @@
 
-w_covariates = "+ w_bmi + w_age + w_education_2 + w_education_3 + w_smokecurr + w_alcohol + w_children"
-h_covariates = "+ h_bmi + h_age + h_education_2 + h_education_3 + h_smokecurr + h_alcohol + h_children"
-hh_covariates = "+ hh_low + hh_medium + hh_high + hh_highest + hh_size + in_caste + residence + in_religion"
-
+w_covariates = "+ w_bmi + w_age + w_education_2 + w_education_3 + w_laborforce + w_smoke + w_heavydrinker + w_moderate_pa + w_vigorous_pa"
+h_covariates = "+ h_bmi + h_age + h_education_2 + h_education_3 + h_laborforce + h_smoke + h_heavydrinker + h_moderate_pa + h_vigorous_pa"
+hh_covariates = "+ hh_low + hh_medium + hh_high + hh_highest + hh_consumptionquintile + hh_size + hh_lengthmar + residence + in_religion  + in_caste"
+#   + hh_children 
 
 w1 <- paste0("w_htn ~ h_htn",w_covariates,hh_covariates) %>% as.formula()
 h1 <- paste0("h_htn ~ w_htn",h_covariates,hh_covariates) %>% as.formula()
@@ -15,7 +15,17 @@ w3 <- paste0("w_htn ~ h_htn*w_education_2 + h_htn*w_education_3",w_covariates,hh
 h3 <- paste0("h_htn ~ w_htn*h_education_2 + w_htn*h_education_3",h_covariates,hh_covariates) %>% 
   str_replace(.,"\\+ h_education_2 \\+ h_education_3","") %>% as.formula()
 
+w4 <- paste0("w_htn ~ h_htn*residence",w_covariates,hh_covariates) %>% str_replace(.,"\\+ residence ","") %>% as.formula()
+h4 <- paste0("h_htn ~ w_htn*residence",h_covariates,hh_covariates) %>% str_replace(.,"\\+ residence ","") %>% as.formula()
 
+
+w5 <- paste0("w_htn ~ h_htn*hh_low + h_htn*hh_medium + h_htn*hh_high + h_htn*hh_highest",w_covariates,hh_covariates) %>% 
+  str_replace(.,"\\+ hh_low \\+ hh_medium \\+ hh_high \\+ hh_highest","") %>% as.formula()
+h5 <- paste0("h_htn ~ w_htn*hh_low + w_htn*hh_medium + w_htn*hh_high + w_htn*hh_highest",h_covariates,hh_covariates) %>% 
+  str_replace(.,"\\+ hh_low \\+ hh_medium \\+ hh_high \\+ hh_highest","") %>% as.formula()
+
+w6 <- paste0("w_htn ~ h_htn*hh_lengthmar_ge10",w_covariates,hh_covariates) %>% str_replace(.,"\\+ hh_lengthmar ","") %>% as.formula()
+h6 <- paste0("h_htn ~ w_htn*hh_lengthmar_ge10",h_covariates,hh_covariates) %>% str_replace(.,"\\+ hh_lengthmar ","") %>% as.formula()
 
 # Lists for models --------
 
@@ -27,3 +37,12 @@ overall_h2 = list()
 
 overall_w3 = list()
 overall_h3 = list()
+
+overall_w4 = list()
+overall_h4 = list()
+
+overall_w5 = list()
+overall_h5 = list()
+
+overall_w6 = list()
+overall_h6 = list()

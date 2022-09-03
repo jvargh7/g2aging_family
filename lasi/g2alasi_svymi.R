@@ -1,21 +1,22 @@
 couples <- readRDS(paste0(path_g2a_family_folder,"/working/G2A LASI Couples.RDS")) %>% 
   mutate_at(vars(w_smokeever,w_smokecurr,w_insurance,
                  h_smokeever,h_smokecurr,h_insurance),function(x) case_when(is.na(x) ~ 0,
-                                                                            TRUE ~ x))
+                                                                            TRUE ~ x)) %>% 
+  mutate(hh_children = apply(.[,c("h_children","w_children")],1,max,na.rm=TRUE) %>% as.numeric(.))
 
 
-continuous_vars <- c(paste0(rep(c("w_","h_"),each=13),
-                            c("sbp","dbp","glucose","weight","height",
+continuous_vars <- c(paste0(rep(c("w_","h_"),each=11),
+                            c("sbp","dbp","weight","height",
                               "bmi","waistcircumference","hipcircumference",
-                              "age","eduyr","children",
+                              "age","eduyr",
                               "moderate_pa","vigorous_pa")),
-                     "hh_size","hh_lengthmar")
+                     "hh_size","hh_lengthmar","hh_children")
 
-proportion_vars <- c(paste0(rep(c("w_","h_"),each=16),
-                            c("screened_bp","diagnosed_bp","medication_bp",
-                              "screened_dm","diagnosed_dm","medication_dm",
+proportion_vars <- c(paste0(rep(c("w_","h_"),each=11),
+                            c("diagnosed_bp","medication_bp",
+                              "diagnosed_dm","medication_dm",
                               
-                              "employment","retirement","smokeever","smokecurr","alcohol",
+                              "laborforce","smoke","heavydrinker","moderate_pa","vigorous_pa",
                               "insurance","htn")),"residence","hh_lengthmar_ge10")
 
 grouped_vars <- c("w_education_h","h_education_h","in_caste","in_religion","hh_wealthquintile","hh_consumptionquintile","hh_incometertile")
@@ -29,7 +30,8 @@ before_imputation <- couples %>%
                 one_of(continuous_vars),one_of(proportion_vars),one_of(grouped_vars)) %>% 
   mutate_at(vars(state,w_moderate_pa,w_vigorous_pa,
                  h_moderate_pa,h_vigorous_pa,
-                 w_retirement,h_retirement,residence,hh_lengthmar),~as.numeric(.)) %>% 
+                 h_heavydrinker,w_heavydrinker,
+                 residence,hh_lengthmar),~as.numeric(.)) %>% 
   # Step 1: One hot encoding
   mutate(
          w_education_2 = case_when(w_education_h == "Upper secondary and vocational training" ~ 1,
@@ -113,12 +115,19 @@ pred = mi_null$predictorMatrix
 pred[c("coupleid","hhid","w_personid","h_personid","h_sampleweight","state","psu"),] <- 0
 pred[,c("coupleid","hhid","w_personid","h_personid","h_sampleweight","state","psu")] <- 0
 
+# Do not impute and do not use for imputation ------
 pred[c("w_htn","h_htn"),] <-0
 pred[,c("w_htn","h_htn")] <-0
 
+# Impute via equation and do not use for imputation , --------
 method["hh_lengthmar_ge10"] <- "~I((hh_lengthmar>=10)*1)"
 pred["hh_lengthmar_ge10",] <- 0
 pred[,"hh_lengthmar_ge10"] <- 0
+
+method["w_ge65"] <- "~I((w_age>=65)*1)"
+method["h_ge65"] <- "~I((h_age>=65)*1)"
+pred[c("w_ge65","h_ge65"),] <- 0
+pred[,c("w_ge65","h_ge65")] <- 0
 
 # https://stackoverflow.com/questions/33865161/model-multiple-imputation-with-interaction-terms
 # https://thestatsgeek.com/2014/05/10/multiple-imputation-with-interactions-and-non-linear-terms/
@@ -128,6 +137,8 @@ for(i_t in interaction_terms){
   htn_term = str_extract(i_t,"^(w|h)_htn")
   em_term = str_replace(i_t,pattern=paste0(htn_term,"_"),replacement = "")
   method[i_t] = paste0("~I(",htn_term,"*",em_term,")")
+  
+  # Do not use interaction terms for imputation of the source variables
   pred[c(htn_term,em_term),i_t] <- 0
 }
 

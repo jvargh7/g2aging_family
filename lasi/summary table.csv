@@ -7,6 +7,7 @@ w_bmi,23.5,23.4,23.7,Continuous,NA,"23.5 (23.4, 23.7)",22868
 w_waistcircumference,84.7,84.3,85,Continuous,NA,"84.7 (84.3, 85)",22867
 w_hipcircumference,93.3,93,93.6,Continuous,NA,"93.3 (93, 93.6)",22864
 w_age,51.1,50.9,51.3,Continuous,NA,"51.1 (50.9, 51.3)",24600
+w_eduyr,3.4,3.3,3.5,Continuous,NA,"3.4 (3.3, 3.5)",24600
 w_children,3.6,3.6,3.7,Continuous,NA,"3.6 (3.6, 3.7)",24465
 w_lengthmar,33.9,33.7,34.1,Continuous,NA,"33.9 (33.7, 34.1)",23762
 w_moderate_pa,3.8,3.7,3.8,Continuous,NA,"3.8 (3.7, 3.8)",24486
@@ -19,6 +20,7 @@ h_bmi,22.2,22.1,22.3,Continuous,NA,"22.2 (22.1, 22.3)",22428
 h_waistcircumference,85.9,85.6,86.2,Continuous,NA,"85.9 (85.6, 86.2)",22422
 h_hipcircumference,89.7,89.5,90,Continuous,NA,"89.7 (89.5, 90)",22425
 h_age,57.2,57,57.4,Continuous,NA,"57.2 (57, 57.4)",24600
+h_eduyr,5.4,5.2,5.5,Continuous,NA,"5.4 (5.2, 5.5)",24599
 h_children,3.6,3.6,3.7,Continuous,NA,"3.6 (3.6, 3.7)",24373
 h_lengthmar,34.6,34.4,34.8,Continuous,NA,"34.6 (34.4, 34.8)",23894
 h_moderate_pa,3.1,3,3.1,Continuous,NA,"3.1 (3, 3.1)",24417
@@ -32,7 +34,8 @@ w_diagnosed_bp,23.4,22.6,24.2,Proportion,NA,"23.4 (22.6, 24.2)",24600
 w_medication_bp,15.3,14.6,15.9,Proportion,NA,"15.3 (14.6, 15.9)",24600
 w_diagnosed_dm,9,8.5,9.5,Proportion,NA,"9 (8.5, 9.5)",24600
 w_medication_dm,7.5,7,7.9,Proportion,NA,"7.5 (7, 7.9)",24600
-w_employment,0,0,0,Proportion,NA,"0 (0, 0)",16889
+w_heavydrinker,0.6,0.5,0.8,Proportion,NA,"0.6 (0.5, 0.8)",24492
+w_employment,34.2,32.9,35.5,Proportion,NA,"34.2 (32.9, 35.5)",24596
 w_retirement,0.8,0.6,0.9,Proportion,NA,"0.8 (0.6, 0.9)",24598
 w_smokeever,2.7,2.3,3,Proportion,NA,"2.7 (2.3, 3)",24600
 w_smokecurr,2.1,1.8,2.5,Proportion,NA,"2.1 (1.8, 2.5)",24600
@@ -44,7 +47,8 @@ h_diagnosed_bp,21.5,20.7,22.2,Proportion,NA,"21.5 (20.7, 22.2)",24600
 h_medication_bp,15,14.4,15.7,Proportion,NA,"15 (14.4, 15.7)",24600
 h_diagnosed_dm,12,11.5,12.6,Proportion,NA,"12 (11.5, 12.6)",24600
 h_medication_dm,9.8,9.3,10.4,Proportion,NA,"9.8 (9.3, 10.4)",24600
-h_employment,0,0,0,Proportion,NA,"0 (0, 0)",8394
+h_heavydrinker,10.1,9.4,10.7,Proportion,NA,"10.1 (9.4, 10.7)",24409
+h_employment,71.5,70.7,72.3,Proportion,NA,"71.5 (70.7, 72.3)",24587
 h_retirement,6.5,6.1,7,Proportion,NA,"6.5 (6.1, 7)",24595
 h_smokeever,33.8,32.7,34.9,Proportion,NA,"33.8 (32.7, 34.9)",24600
 h_smokecurr,26.8,25.8,27.8,Proportion,NA,"26.8 (25.8, 27.8)",24600
@@ -94,3 +98,17 @@ hh_incometertile,31.1,30.1,32.1,Grouped,Low,"31.1 (30.1, 32.1)",24599
 hh_incometertile,34.9,33.9,35.9,Grouped,Medium,"34.9 (33.9, 35.9)",24599
 hh_incometertile,34,32.8,35.1,Grouped,High,"34 (32.8, 35.1)",24599
 hh_incometertile,0,-0,0,Grouped,NA,"0 (0, 0)",24599
+w_laborforce,65.1,63.8,66.4,Grouped,None,"65.1 (63.8, 66.4)",24596
+w_laborforce,34.1,32.9,35.4,Grouped,Formal,"34.1 (32.9, 35.4)",24596
+w_laborforce,0.8,0.6,0.9,Grouped,Retired,"0.8 (0.6, 0.9)",24596
+w_laborforce,0,-0,0,Grouped,NA,"0 (0, 0)",24596
+w_smoke,97.3,97,97.7,Grouped,Never,"97.3 (97, 97.7)",24600
+w_smoke,0.5,0.4,0.7,Grouped,Former,"0.5 (0.4, 0.7)",24600
+w_smoke,2.1,1.8,2.5,Grouped,Current,"2.1 (1.8, 2.5)",24600
+h_laborforce,23.1,22.3,23.8,Grouped,None,"23.1 (22.3, 23.8)",24588
+h_laborforce,70.4,69.5,71.2,Grouped,Formal,"70.4 (69.5, 71.2)",24588
+h_laborforce,6.5,6.1,7,Grouped,Retired,"6.5 (6.1, 7)",24588
+h_laborforce,0,0,0.1,Grouped,NA,"0 (0, 0.1)",24588
+h_smoke,66.2,65.1,67.3,Grouped,Never,"66.2 (65.1, 67.3)",24600
+h_smoke,7,6.6,7.4,Grouped,Former,"7 (6.6, 7.4)",24600
+h_smoke,26.8,25.8,27.8,Grouped,Current,"26.8 (25.8, 27.8)",24600
