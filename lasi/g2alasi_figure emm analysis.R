@@ -36,9 +36,11 @@ tab_stratum <- bind_rows(htn_main,
                                        "Length of marriage >= 10"),ordered=TRUE))
   
   
-  
+tab_stratum %>% 
+  dplyr::select(label,sex_self,RR) %>% 
+  pivot_wider(names_from="sex_self",values_from="RR") %>% 
 
-write_csv(tab_stratum,"lasi/table_emm analysis results.csv")
+write_csv(.,"lasi/table_emm analysis results.csv")
 
 figA <- tab_stratum %>% dplyr::filter(outcome == "Hypertension") %>% 
   ggplot(data=.,
