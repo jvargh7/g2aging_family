@@ -120,16 +120,16 @@ bind_rows(
   contrasts_h4_out %>% mutate(model = "H4"),
   
   contrasts_w5_out_wlt2 %>% mutate(model = "W5 Low"),
-  contrasts_h5_out_wlt2 %>% mutate(model = "W5 Low"),
+  contrasts_h5_out_wlt2 %>% mutate(model = "H5 Low"),
   
   contrasts_w5_out_wlt3 %>% mutate(model = "W5 Medium"),
-  contrasts_h5_out_wlt3 %>% mutate(model = "W5 Medium"),
+  contrasts_h5_out_wlt3 %>% mutate(model = "H5 Medium"),
   
   contrasts_w5_out_wlt4 %>% mutate(model = "W5 High"),
-  contrasts_h5_out_wlt4 %>% mutate(model = "W5 High"),
+  contrasts_h5_out_wlt4 %>% mutate(model = "H5 High"),
   
   contrasts_w5_out_wlt5 %>% mutate(model = "W5 Highest"),
-  contrasts_h5_out_wlt5 %>% mutate(model = "W5 Highest"),
+  contrasts_h5_out_wlt5 %>% mutate(model = "H5 Highest"),
   
   
   contrasts_w6_out %>% mutate(model = "W6"),
