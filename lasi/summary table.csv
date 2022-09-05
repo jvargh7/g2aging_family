@@ -74,11 +74,10 @@ h_education,36.9,35.7,38.2,Grouped,NA,"36.9 (35.7, 38.2)",17239
 h_education_h,62.2,61,63.5,Grouped,Less than lower secondary,"62.2 (61, 63.5)",24600
 h_education_h,7.6,6.9,8.2,Grouped,Tertiary,"7.6 (6.9, 8.2)",24600
 h_education_h,30.2,29.2,31.2,Grouped,Upper secondary and vocational training,"30.2 (29.2, 31.2)",24600
-in_caste,26.7,25.5,27.9,Grouped,General,"26.7 (25.5, 27.9)",24433
-in_caste,44.9,43.6,46.3,Grouped,OBC,"44.9 (43.6, 46.3)",24433
-in_caste,19.4,18.3,20.5,Grouped,Scheduled Caste,"19.4 (18.3, 20.5)",24433
-in_caste,8.7,7.7,9.6,Grouped,Scheduled Tribe,"8.7 (7.7, 9.6)",24433
-in_caste,0.3,0.2,0.4,Grouped,NA,"0.3 (0.2, 0.4)",24433
+in_caste,27,25.8,28.3,Grouped,General,"27 (25.8, 28.3)",24600
+in_caste,44.9,43.6,46.3,Grouped,OBC,"44.9 (43.6, 46.3)",24600
+in_caste,19.4,18.3,20.5,Grouped,Scheduled Caste,"19.4 (18.3, 20.5)",24600
+in_caste,8.7,7.7,9.6,Grouped,Scheduled Tribe,"8.7 (7.7, 9.6)",24600
 in_religion,80.9,79.6,82.3,Grouped,Hindu,"80.9 (79.6, 82.3)",24600
 in_religion,12.5,11.2,13.8,Grouped,Muslim,"12.5 (11.2, 13.8)",24600
 in_religion,6.6,6,7.1,Grouped,Other,"6.6 (6, 7.1)",24600

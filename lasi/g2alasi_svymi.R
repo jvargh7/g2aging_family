@@ -1,9 +1,4 @@
-couples <- readRDS(paste0(path_g2a_family_folder,"/working/G2A LASI Couples.RDS")) %>% 
-  mutate_at(vars(w_smokeever,w_smokecurr,w_insurance,
-                 h_smokeever,h_smokecurr,h_insurance),function(x) case_when(is.na(x) ~ 0,
-                                                                            TRUE ~ x)) %>% 
-  mutate(hh_children = apply(.[,c("h_children","w_children")],1,max,na.rm=TRUE) %>% as.numeric(.))
-
+source("lasi/g2alasi_analytic sample.R")
 
 continuous_vars <- c(paste0(rep(c("w_","h_"),each=11),
                             c("sbp","dbp","weight","height",
@@ -149,4 +144,4 @@ mi_dfs <- mice(before_imputation,
                pred = pred,
                m=10,maxit=50,seed=500)
 
-saveRDS(mi_dfs, paste0(path_g2a_family_folder,"/working/G2A LASI Couples mi_dfs_updated.RDS"))
+saveRDS(mi_dfs, paste0(path_g2a_family_folder,"/working/G2A LASI Couples mi_dfs.RDS"))

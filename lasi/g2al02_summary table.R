@@ -1,10 +1,7 @@
 require(srvyr)
 source("C:/code/external/functions/survey/svysummary.R")
 
-couples <- readRDS(paste0(path_g2a_family_folder,"/working/G2A LASI Couples.RDS")) %>% 
-  mutate_at(vars(w_smokeever,w_smokecurr,w_insurance,
-                 h_smokeever,h_smokecurr,h_insurance),function(x) case_when(is.na(x) ~ 0,
-                                                                            TRUE ~ x))
+source("lasi/g2alasi_analytic sample.R")
 
 continuous_vars <- c(paste0(rep(c("w_","h_"),each=14),
                           c("sbp","dbp","glucose","weight","height",
