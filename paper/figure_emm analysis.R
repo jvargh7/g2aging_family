@@ -47,7 +47,7 @@ tab_stratum <- bind_rows(hrs_main,
                            left_join(contrast_map,
                                      by=c("term","model")) %>% 
                            dplyr::filter(!is.na(label))) %>% 
-  dplyr::select(label,outcome,model,RR,theta_D,lci,uci) %>% 
+  dplyr::select(label,outcome,survey, model,RR,theta_D,lci,uci) %>% 
   mutate(est = exp(theta_D),
          sex_self = case_when(str_detect(model,"W") ~ "Wives",
                               TRUE ~ "Husbands")) %>% 
@@ -69,7 +69,7 @@ tab_stratum <- bind_rows(hrs_main,
 
 
 tab_stratum %>% 
-  dplyr::select(label,sex_self,RR) %>% 
+  dplyr::select(label,survey,sex_self,RR) %>% 
   pivot_wider(names_from="sex_self",values_from="RR") %>% 
   
   write_csv(.,"paper/table_emm analysis results.csv")
