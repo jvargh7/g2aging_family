@@ -74,10 +74,10 @@ couples_hh <- couples %>%
   left_join(hh_quintiles %>% 
               dplyr::select(hhid,contains("ile")),
             by="hhid") 
-saveRDS(couples_hh,paste0(path_g2a_family_folder,"/working/G2A couples_hh.RDS"))  
-# couples_hh <- readRDS(paste0(path_g2a_family_folder,"/working/G2A couples_hh.RDS"))  
+saveRDS(couples_hh,paste0(path_g2a_family_folder,"/working/lasi/G2A couples_hh.RDS"))  
+# couples_hh <- readRDS(paste0(path_g2a_family_folder,"/working/lasi/G2A couples_hh.RDS"))  
 
-lasi_couples <- readRDS(paste0(path_g2a_family_folder,"/working/LASI Couples.RDS"))
+lasi_couples <- readRDS(paste0(path_g2a_family_folder,"/working/lasi/LASI Couples.RDS"))
 
 couples_hh %>% 
   dplyr::select(coupleid,hhid,h_sampleweight,hhweight,
@@ -117,6 +117,6 @@ couples_hh %>%
          hh_lengthmar_ge10 = case_when(!is.na(h_lengthmar_ge10) ~ h_lengthmar_ge10,
                                        TRUE ~ w_lengthmar_ge10)) %>%
   mutate_at(vars(h_height,w_height),function(x) x*100) %>% 
-saveRDS(.,paste0(path_g2a_family_folder,"/working/G2A LASI Couples.RDS"))  
+saveRDS(.,paste0(path_g2a_family_folder,"/working/lasi/G2A LASI Couples.RDS"))  
 
 

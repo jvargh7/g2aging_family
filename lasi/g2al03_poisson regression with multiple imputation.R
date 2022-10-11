@@ -1,4 +1,4 @@
-mi_dfs <- readRDS(paste0(path_g2a_family_folder,"/working/G2A LASI Couples mi_dfs.RDS"))
+mi_dfs <- readRDS(paste0(path_g2a_family_folder,"/working/lasi/G2A LASI Couples mi_dfs.RDS"))
 
 require(mice)
 require(srvyr)
