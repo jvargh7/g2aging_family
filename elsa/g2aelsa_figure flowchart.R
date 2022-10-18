@@ -1,4 +1,4 @@
-couples <- readRDS(paste0(path_g2a_family_folder,"/working/lasi/G2A LASI Couples.RDS")) 
+couples <- readRDS(paste0(path_g2a_family_folder,"/working/elsa/G2A ELSA Couples.RDS")) 
 
 
 legal_age <- couples %>%
@@ -20,3 +20,4 @@ sbp_dbp <- self_htn_other %>%
                                 !is.na(h_sbp) & !is.na(h_dbp) ~ 1,
                                 TRUE ~ 0)) %>% 
   dplyr::filter(w_eligible == 1,h_eligible == 1)
+

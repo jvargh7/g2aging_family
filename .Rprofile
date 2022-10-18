@@ -6,6 +6,10 @@ if(Sys.info()["user"]=="JVARGH7"){
   path_g2a_family_folder <- "C:/Cloud/OneDrive - Emory University/Papers/Crossnational Family Clustering"
 }
 
+if(Sys.info()["user"]=="DCHOI30"){
+  path_g2a_family_folder <- ""
+}
+
 options(survey.adjust.domain.lonely=TRUE)
 options(survey.lonely.psu="adjust")
 

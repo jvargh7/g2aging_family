@@ -253,11 +253,11 @@ g2aelsa_preprocessing <- function(df){
                                                                    x %in% c(3,4,5) ~ 0,
                                                                    TRUE ~ NA_real_)) %>% 
     mutate(heavydrinker = case_when(
-                                     sex == 1 & drinksperweek >= 35 ~ 1,
-                                     sex == 2 & drinksperweek >= 28 ~ 1,
+                                     sex == 1 & drinksperweek >= 15 ~ 1,
+                                     sex == 2 & drinksperweek >= 8 ~ 1,
                                      
-                                     sex == 1 & drinksperweek < 35 ~ 0,
-                                     sex == 2 & drinksperweek < 28 ~ 0,
+                                     sex == 1 & drinksperweek < 15 ~ 0,
+                                     sex == 2 & drinksperweek < 8 ~ 0,
                                      TRUE ~ NA_real_)) %>% 
     
     return(.)

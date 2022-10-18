@@ -12,8 +12,8 @@ g2aelsa_s_variables <- readxl::read_excel("elsa/G2A ELSA Family Variable List.xl
 
 r_male <- haven::read_dta(paste0(path_g2a_family_folder,"/working/elsa/h_elsa_g2.dta"),
                           col_select = na.omit(g2aelsa_r_variables$selected)) %>% 
-  rename_with(~ g2aelsa_r_variables$new_var[which(g2aelsa_r_variables$selected == .x)], 
-              .cols = g2aelsa_r_variables$selected) %>% 
+  rename_with(.cols = g2aelsa_r_variables$selected,
+              ~g2aelsa_r_variables$new_var[which(g2aelsa_r_variables$selected == .x)]) %>% 
   dplyr::filter(sex == 1)
 
 s_male <- haven::read_dta(paste0(path_g2a_family_folder,"/working/elsa/h_elsa_g2.dta"),
