@@ -27,15 +27,17 @@ grouped_vars <- c("w_education_h","h_education_h",
 
 couples_svy <- couples  %>% 
   as_survey_design(.data = .,
-                   ids = psu,strata = strata,
-                   weight = h_sampleweight,
+                   ids = psu,
+                   # strata = strata,
+                   weight = imputed_sampleweight,
                    nest = TRUE,
                    variance = "YG",pps = "brewer")
 
 couples_svysummary <- svysummary(couples_svy,
                                  c_vars = continuous_vars,
                                  p_vars = proportion_vars,
-                                 g_vars = grouped_vars) %>% 
+                                 g_vars = grouped_vars
+                                 ) %>% 
   mutate_at(vars(estimate,lci,uci),~round(.,1)) %>% 
   mutate(est_ci = paste0(estimate," (",
                          lci,", ",uci,")"))

@@ -14,8 +14,9 @@ for(i in 1:mi_dfs$m){
   svy_des = df  %>% 
     # Need to impute and correct
     as_survey_design(.data = .,
-                     ids = psu,strata = strata,
-                     weight = h_sampleweight,
+                     ids = psu,
+                     # strata = strata,
+                     weight = imputed_sampleweight,
                      nest = TRUE,
                      variance = "YG",pps = "brewer");
   

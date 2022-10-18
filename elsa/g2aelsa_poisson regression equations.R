@@ -1,6 +1,6 @@
 # w_heavydrinker + 
-w_covariates = "+ w_bmi + w_age + w_education_2 + w_education_3 + w_laborforce + w_smoke + w_moderate_pa + w_vigorous_pa + w_race + w_religion"
-h_covariates = "+ h_bmi + h_age + h_education_2 + h_education_3 + h_laborforce + h_smoke + h_moderate_pa + h_vigorous_pa + h_race + h_religion"
+w_covariates = "+ w_bmi + w_age + w_education_2 + w_education_3 + w_laborforce + w_smoke + w_moderate_pa + w_vigorous_pa + w_race + w_religion + w_heavydrinker"
+h_covariates = "+ h_bmi + h_age + h_education_2 + h_education_3 + h_laborforce + h_smoke + h_moderate_pa + h_vigorous_pa + h_race + h_religion + h_heavydrinker"
 hh_covariates = "+ hh_low + hh_medium + hh_high + hh_highest + hh_consumptionquintile + hh_size + hh_lengthmar"
 #   + hh_children 
 

@@ -1,6 +1,8 @@
 source("elsa/g2aelsa_preprocessing.R")
 
-h_elsa_g2 <- haven::read_dta(paste0(path_g2a_family_folder,"/working/elsa/h_elsa_g2.dta"))
+h_elsa_g2 <- haven::read_dta(paste0(path_g2a_family_folder,"/working/elsa/h_elsa_g2.dta"),
+                col_select = c("h8coupid","idauniq","s8idauniq","ragender","s8gender","r1strat","r8strat"))
+
 
 g2aelsa_r_variables <- readxl::read_excel("elsa/G2A ELSA Family Variable List.xlsx",sheet="wave8") %>% 
   rename("selected" = harmonized_r) %>% 
@@ -52,8 +54,15 @@ female <- bind_rows(r_female %>% mutate(type = "Respondent"),
 couples <- left_join(male %>% dplyr::filter(!is.na(coupleid)),
                      female %>% dplyr::filter(!is.na(coupleid)) %>% dplyr::select(-one_of(survey_vars,hh_vars)),
                      by="coupleid") %>% 
-  distinct(coupleid,.keep_all=TRUE) %>% 
-  dplyr::filter(!h_spouseid %in% c(0,NA_real_), !w_spouseid %in% c(0,NA_real_))
+  dplyr::filter(h_type == "Respondent",w_type == "Respondent") 
+  # No need to run the below lines because every spouse is a respondent in ELSA
+  # distinct(coupleid,.keep_all=TRUE) %>% 
+  # dplyr::filter(!h_spouseid %in% c(0,NA_real_), !w_spouseid %in% c(0,NA_real_))
+
+View(couples %>% dplyr::select(h_personid,w_spouseid,hhid,coupleid,
+                               h_spouseid,w_personid,h_sex,w_sex,h_type,w_type,
+                               h_sampleweight,w_sampleweight))
+
 
 require(Hmisc)
 hh_quintiles <- couples %>% 
@@ -112,7 +121,8 @@ couples_hh %>%
                                   TRUE ~ w_lengthmar),
          hh_lengthmar_ge10 = case_when(!is.na(h_lengthmar_ge10) ~ h_lengthmar_ge10,
                                        TRUE ~ w_lengthmar_ge10)) %>%
-  mutate_at(vars(h_height,w_height),function(x) x*100) %>% 
+  mutate_at(vars(h_height,w_height),function(x) x*100) %>%
+  
   saveRDS(.,paste0(path_g2a_family_folder,"/working/elsa/G2A ELSA Couples.RDS"))  
 
 
