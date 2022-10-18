@@ -25,7 +25,7 @@ require(survey)
 require(mice)
 
 before_imputation <- couples %>% 
-  dplyr::select(coupleid,hhid,w_personid,h_personid,imputed_sampleweight,strata,psu,
+  dplyr::select(coupleid,hhid,w_personid,h_personid,imputed_sampleweight,h_sampleweight,w_sampleweight,strata,psu,
                 one_of(continuous_vars),one_of(proportion_vars),one_of(grouped_vars)) %>% 
   mutate_at(vars(strata,w_moderate_pa,w_vigorous_pa,
                  h_moderate_pa,h_vigorous_pa,
@@ -110,8 +110,8 @@ mi_null <- mice(before_imputation,
 method = mi_null$method
 pred = mi_null$predictorMatrix
 
-pred[c("coupleid","hhid","w_personid","h_personid","imputed_sampleweight","strata","psu"),] <- 0
-pred[,c("coupleid","hhid","w_personid","h_personid","imputed_sampleweight","strata","psu")] <- 0
+pred[c("coupleid","hhid","w_personid","h_personid","imputed_sampleweight","h_sampleweight","w_sampleweight","strata","psu"),] <- 0
+pred[,c("coupleid","hhid","w_personid","h_personid","imputed_sampleweight","h_sampleweight","w_sampleweight","strata","psu")] <- 0
 
 # Do not impute and do not use for imputation ------
 pred[c("w_htn","h_htn"),] <-0
@@ -145,6 +145,6 @@ for(i_t in interaction_terms){
 mi_dfs <- mice(before_imputation,
                method = method,
                pred = pred,
-               m=5,maxit=10,seed=500)
+               m=10,maxit=50,seed=500)
 
 saveRDS(mi_dfs, paste0(path_g2a_family_folder,"/working/elsa/G2A ELSA Couples mi_dfs.RDS"))
