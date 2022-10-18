@@ -133,11 +133,11 @@ g2aelsa_preprocessing <- function(df){
                    diagnosed_dm,medication_dm), function(x) case_when(x== 2 ~ 0,
                                                                       x == 1 ~ 1,
                                                                       TRUE ~ NA_real_)) %>% 
-    mutate(uk_race = case_when(race == 1 ~ 1,
+    mutate(race = case_when(race == 1 ~ 1,
                                race == 4 ~ 0,
                                 TRUE ~ as.numeric(race)),
            
-           uk_religion = case_when(religion == 1 ~ 11,
+           religion = case_when(religion == 1 ~ 11,
                                    religion == 8 ~ 12,
                                    TRUE ~ 13)) %>% 
     # BMI
@@ -149,11 +149,11 @@ g2aelsa_preprocessing <- function(df){
                                                       x == 3 ~ "Tertiary",
                                                       TRUE ~ NA_character_)) %>% 
     # Race
-    mutate_at(vars(uk_race),function(x) case_when(x == 1 ~ "White",
+    mutate_at(vars(race),function(x) case_when(x == 1 ~ "White",
                                                       x == 0 ~ "Non-White",
                                                       TRUE ~ "Other")) %>%
     # Religion
-    mutate_at(vars(uk_religion),function(x) case_when(x == 11 ~ "Christian",
+    mutate_at(vars(religion),function(x) case_when(x == 11 ~ "Christian",
                                                       x == 12 ~ "None",
                                                       TRUE ~ "Other")) %>% 
     # insurance, alcohol
@@ -253,12 +253,17 @@ g2aelsa_preprocessing <- function(df){
                                                                    x %in% c(3,4,5) ~ 0,
                                                                    TRUE ~ NA_real_)) %>% 
     mutate(heavydrinker = case_when(
-                                     sex == 1 & drinksperweek >= 15 ~ 1,
-                                     sex == 2 & drinksperweek >= 8 ~ 1,
+                                     sex == "Male" & drinksperweek >= 15 ~ 1,
+                                     sex == "Female" & drinksperweek >= 8 ~ 1,
                                      
-                                     sex == 1 & drinksperweek < 15 ~ 0,
-                                     sex == 2 & drinksperweek < 8 ~ 0,
+                                     sex == "Male" & drinksperweek < 15 ~ 0,
+                                     sex == "Female" & drinksperweek < 8 ~ 0,
                                      TRUE ~ NA_real_)) %>% 
+    
+    mutate(psu = case_when(psu %in% paste0("E1200000",c(1:9)) ~ str_replace(psu,"E1200000",""),
+                           psu == "S99999999" ~ "10",
+                           psu == "W99999999" ~ "11")) %>% 
+    mutate(psu = as.numeric(psu)) %>% 
     
     return(.)
 }

@@ -1,5 +1,7 @@
 source("elsa/g2aelsa_preprocessing.R")
 
+h_elsa_g2 <- haven::read_dta(paste0(path_g2a_family_folder,"/working/elsa/h_elsa_g2.dta"))
+
 g2aelsa_r_variables <- readxl::read_excel("elsa/G2A ELSA Family Variable List.xlsx",sheet="wave8") %>% 
   rename("selected" = harmonized_r) %>% 
   dplyr::select(level,new_var,selected) %>% 
@@ -35,7 +37,7 @@ s_female <- haven::read_dta(paste0(path_g2a_family_folder,"/working/elsa/h_elsa_
   dplyr::filter(sex == 2)
 
 survey_vars <- c("strata","psu","hhid")
-hh_vars <- c("uk_religion","uk_race","hh_wealth","hh_income","hh_consumption","hh_size")
+hh_vars <- c("hh_wealth","hh_income","hh_consumption","hh_size")
 
 male <- bind_rows(r_male %>% mutate(type = "Respondent"),
                   s_male %>% mutate(type = "Spouse"))  %>% 
@@ -47,8 +49,8 @@ female <- bind_rows(r_female %>% mutate(type = "Respondent"),
   g2aelsa_preprocessing(.) %>% 
   rename_at(vars(-one_of(c(survey_vars,hh_vars,"coupleid"))),~paste0("w_",.))
 
-couples <- left_join(male,
-                     female %>% dplyr::select(-one_of(survey_vars,hh_vars)),
+couples <- left_join(male %>% dplyr::filter(!is.na(coupleid)),
+                     female %>% dplyr::filter(!is.na(coupleid)) %>% dplyr::select(-one_of(survey_vars,hh_vars)),
                      by="coupleid") %>% 
   distinct(coupleid,.keep_all=TRUE) %>% 
   dplyr::filter(!h_spouseid %in% c(0,NA_real_), !w_spouseid %in% c(0,NA_real_))
@@ -78,7 +80,7 @@ saveRDS(couples_hh,paste0(path_g2a_family_folder,"/working/elsa/G2A couples_hh.R
 # couples_hh <- readRDS(paste0(path_g2a_family_folder,"/working/elsa/G2A couples_hh.RDS"))  
 
 couples_hh %>% 
-  dplyr::select(coupleid,hhid,h_sampleweight,
+  dplyr::select(coupleid,hhid,h_sampleweight,w_sampleweight,
                 strata,psu, hh_income, hh_consumption,hh_wealth,
                 hh_incometertile,hh_consumptionquintile,hh_wealthquintile,
                 hh_size,
