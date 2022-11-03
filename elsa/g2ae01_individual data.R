@@ -54,9 +54,11 @@ female <- bind_rows(r_female %>% mutate(type = "Respondent"),
 couples <- left_join(male %>% dplyr::filter(!is.na(coupleid)),
                      female %>% dplyr::filter(!is.na(coupleid)) %>% dplyr::select(-one_of(survey_vars,hh_vars)),
                      by="coupleid") %>% 
-  dplyr::filter(h_type == "Respondent",w_type == "Respondent") 
+  # Husband or Wife has to be part of original sample
+  dplyr::filter(h_cohort == 1 | w_cohort == 1) %>% 
+  # dplyr::filter(h_type == "Respondent",w_type == "Respondent") 
   # No need to run the below lines because every spouse is a respondent in ELSA
-  # distinct(coupleid,.keep_all=TRUE) %>% 
+  distinct(coupleid,.keep_all=TRUE)
   # dplyr::filter(!h_spouseid %in% c(0,NA_real_), !w_spouseid %in% c(0,NA_real_))
 
 View(couples %>% dplyr::select(h_personid,w_spouseid,hhid,coupleid,

@@ -8,16 +8,7 @@ couples <- readRDS(paste0(path_g2a_family_folder,"/working/elsa/G2A ELSA Couples
                                 TRUE ~ 0),
          h_eligible = case_when(h_diagnosed_bp == 1 ~ 1,
                                 !is.na(h_sbp) & !is.na(h_dbp) ~ 1,
-                                TRUE ~ 0)) %>% 
-  group_by(psu) %>% 
-  
-  mutate(h_psu_median_sampleweight = median(h_sampleweight),
-         w_psu_median_sampleweight = median(w_sampleweight)) %>% 
-  ungroup() %>% 
-  mutate(mean_psu_median_sampleweight = rowMeans(.[,c("h_psu_median_sampleweight","w_psu_median_sampleweight")])) %>% 
-  mutate(imputed_sampleweight = case_when(h_sampleweight == 0.0 ~ w_sampleweight,
-                                          w_sampleweight == 0.0 ~ h_sampleweight,
-                                          TRUE ~ mean_psu_median_sampleweight))
+                                TRUE ~ 0)) 
 
 
 couples <- couples %>% 

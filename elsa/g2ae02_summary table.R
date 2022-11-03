@@ -24,35 +24,73 @@ grouped_vars <- c("w_education_h","h_education_h",
                   "w_laborforce","w_smoke","h_laborforce","h_smoke"
 )
 
-
-couples_svy <- couples  %>% 
+# Husbands summary ----------
+husbands_svy <- couples  %>% 
+  dplyr::filter(!is.na(h_sampleweight), h_sampleweight > 0) %>% 
   as_survey_design(.data = .,
                    ids = psu,
                    # strata = strata,
-                   weight = imputed_sampleweight,
+                   weight = h_sampleweight,
                    nest = TRUE,
                    variance = "YG",pps = "brewer")
 
-couples_svysummary <- svysummary(couples_svy,
-                                 c_vars = continuous_vars,
-                                 p_vars = proportion_vars,
-                                 g_vars = grouped_vars
+
+husbands_svysummary <- svysummary(husbands_svy,
+                                 c_vars = continuous_vars[regexpr("^h_",continuous_vars)>0],
+                                 p_vars = proportion_vars[regexpr("^h_",proportion_vars)>0],
+                                 g_vars = grouped_vars[regexpr("^h_",grouped_vars)>0]
                                  ) %>% 
   mutate_at(vars(estimate,lci,uci),~round(.,1)) %>% 
   mutate(est_ci = paste0(estimate," (",
                          lci,", ",uci,")"))
 
-couples_count <- couples %>% 
-  summarize_at(vars(one_of(c(continuous_vars,
-                             proportion_vars,
-                             grouped_vars))),
+husbands_count <- couples  %>% 
+  dplyr::filter(!is.na(h_sampleweight), h_sampleweight > 0) %>% 
+  summarize_at(vars(one_of(c(continuous_vars[regexpr("^h_",continuous_vars)>0],
+                             proportion_vars[regexpr("^h_",proportion_vars)>0],
+                             grouped_vars[regexpr("^h_",grouped_vars)>0]))),
                list(n = ~sum(!is.na(.)))) %>% 
   pivot_longer(names_to="variable",values_to="n",cols=everything()) %>% 
   mutate(variable = str_replace(variable,"_n$",""))
 
 
-left_join(couples_svysummary,
-          couples_count,
-          by="variable") %>% 
+# Wives summary ----------
+wives_svy <- couples  %>% 
+  dplyr::filter(!is.na(w_sampleweight), w_sampleweight > 0) %>% 
+  as_survey_design(.data = .,
+                   ids = psu,
+                   # strata = strata,
+                   weight = h_sampleweight,
+                   nest = TRUE,
+                   variance = "YG",pps = "brewer")
+
+wives_svysummary <- svysummary(wives_svy,
+                                  c_vars = continuous_vars[regexpr("^w_",continuous_vars)>0],
+                                  p_vars = proportion_vars[regexpr("^w_",proportion_vars)>0],
+                                  g_vars = grouped_vars[regexpr("^w_",grouped_vars)>0]
+) %>% 
+  mutate_at(vars(estimate,lci,uci),~round(.,1)) %>% 
+  mutate(est_ci = paste0(estimate," (",
+                         lci,", ",uci,")"))
+
+wives_count <- couples  %>% 
+  dplyr::filter(!is.na(w_sampleweight), w_sampleweight > 0) %>% 
+  summarize_at(vars(one_of(c(continuous_vars[regexpr("^w_",continuous_vars)>0],
+                             proportion_vars[regexpr("^w_",proportion_vars)>0],
+                             grouped_vars[regexpr("^w_",grouped_vars)>0]))),
+               list(n = ~sum(!is.na(.)))) %>% 
+  pivot_longer(names_to="variable",values_to="n",cols=everything()) %>% 
+  mutate(variable = str_replace(variable,"_n$",""))
+
+
+
+
+
+left_join(bind_rows(husbands_svysummary %>% mutate(spouse = "Husband"),
+                    wives_svysummary %>% mutate(spouse = "Wife")),
+          
+    bind_rows(husbands_count %>% mutate(spouse = "Husband"),
+            wives_count %>% mutate(spouse = "Wife")),
+          by=c("variable","spouse")) %>% 
   write_csv(.,"elsa/summary table.csv")
 
