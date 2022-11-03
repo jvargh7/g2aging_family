@@ -11,25 +11,36 @@ source("elsa/g2aelsa_poisson regression equations.R")
 for(i in 1:mi_dfs$m){
   df = complete(mi_dfs,action = i);
   
-  svy_des = df  %>% 
+  svy_des_wives = df  %>% 
+    dplyr::filter(!is.na(w_sampleweight), w_sampleweight > 0) %>% 
     # Need to impute and correct
     as_survey_design(.data = .,
                      ids = psu,
                      # strata = strata,
-                     weight = imputed_sampleweight,
+                     weight = w_sampleweight,
                      nest = TRUE,
                      variance = "YG",pps = "brewer");
   
-  overall_w1[[i]] = svyglm(w1,design=svy_des,family=quasipoisson());
-  overall_h1[[i]] = svyglm(h1,design=svy_des,family=quasipoisson());
-  overall_w2[[i]] = svyglm(w2,design=svy_des,family=quasipoisson());
-  overall_h2[[i]] = svyglm(h2,design=svy_des,family=quasipoisson());
-  overall_w3[[i]] = svyglm(w3,design=svy_des,family=quasipoisson());
-  overall_h3[[i]] = svyglm(h3,design=svy_des,family=quasipoisson());
-  overall_w5[[i]] = svyglm(w5,design=svy_des,family=quasipoisson());
-  overall_h5[[i]] = svyglm(h5,design=svy_des,family=quasipoisson());
-  overall_w6[[i]] = svyglm(w6,design=svy_des,family=quasipoisson());
-  overall_h6[[i]] = svyglm(h6,design=svy_des,family=quasipoisson());
+  svy_des_husbands = df  %>% 
+    dplyr::filter(!is.na(h_sampleweight), h_sampleweight > 0) %>% 
+    # Need to impute and correct
+    as_survey_design(.data = .,
+                     ids = psu,
+                     # strata = strata,
+                     weight = h_sampleweight,
+                     nest = TRUE,
+                     variance = "YG",pps = "brewer");
+  
+  overall_w1[[i]] = svyglm(w1,design=svy_des_wives,family=quasipoisson());
+  overall_h1[[i]] = svyglm(h1,design=svy_des_husbands,family=quasipoisson());
+  overall_w2[[i]] = svyglm(w2,design=svy_des_wives,family=quasipoisson());
+  overall_h2[[i]] = svyglm(h2,design=svy_des_husbands,family=quasipoisson());
+  overall_w3[[i]] = svyglm(w3,design=svy_des_wives,family=quasipoisson());
+  overall_h3[[i]] = svyglm(h3,design=svy_des_husbands,family=quasipoisson());
+  overall_w5[[i]] = svyglm(w5,design=svy_des_wives,family=quasipoisson());
+  overall_h5[[i]] = svyglm(h5,design=svy_des_husbands,family=quasipoisson());
+  overall_w6[[i]] = svyglm(w6,design=svy_des_wives,family=quasipoisson());
+  overall_h6[[i]] = svyglm(h6,design=svy_des_husbands,family=quasipoisson());
   
   
   gc();rm(df);rm(svy_des)
@@ -95,8 +106,8 @@ contrasts_h5_out_wlt4 = mice_contrasts_svyglm(svymodel_list = overall_h5,modifie
 contrasts_w5_out_wlt5 = mice_contrasts_svyglm(svymodel_list = overall_w5,modifier = "hh_highest",exposure = "h_htn")
 contrasts_h5_out_wlt5 = mice_contrasts_svyglm(svymodel_list = overall_h5,modifier="hh_highest",exposure="w_htn")
 
-contrasts_w6_out = mice_contrasts_svyglm(svymodel_list = overall_w6,modifier = "hh_lengthmar_ge10",exposure = "h_htn")
-contrasts_h6_out = mice_contrasts_svyglm(svymodel_list = overall_h6,modifier="hh_lengthmar_ge10",exposure="w_htn")
+# contrasts_w6_out = mice_contrasts_svyglm(svymodel_list = overall_w6,modifier = "hh_lengthmar_ge10",exposure = "h_htn")
+# contrasts_h6_out = mice_contrasts_svyglm(svymodel_list = overall_h6,modifier="hh_lengthmar_ge10",exposure="w_htn")
 
 
 bind_rows(
@@ -120,8 +131,8 @@ bind_rows(
   contrasts_h5_out_wlt5 %>% mutate(model = "H5 Highest"),
   
   
-  contrasts_w6_out %>% mutate(model = "W6"),
-  contrasts_h6_out %>% mutate(model = "H6")
+  # contrasts_w6_out %>% mutate(model = "W6"),
+  # contrasts_h6_out %>% mutate(model = "H6")
   
 ) %>% 
   write_csv(.,"elsa/g2ae03_contrasts for poisson regression with multiple imputation.csv")
