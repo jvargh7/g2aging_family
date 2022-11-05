@@ -36,9 +36,9 @@ husbands_svy <- couples  %>%
 
 
 husbands_svysummary <- svysummary(husbands_svy,
-                                 c_vars = continuous_vars[regexpr("^h_",continuous_vars)>0],
-                                 p_vars = proportion_vars[regexpr("^h_",proportion_vars)>0],
-                                 g_vars = grouped_vars[regexpr("^h_",grouped_vars)>0]
+                                 c_vars = continuous_vars[regexpr("^(h_|hh_)",continuous_vars)>0],
+                                 p_vars = proportion_vars[regexpr("^(h_|hh_)",proportion_vars)>0],
+                                 g_vars = grouped_vars[regexpr("^(h_|hh_)",grouped_vars)>0]
                                  ) %>% 
   mutate_at(vars(estimate,lci,uci),~round(.,1)) %>% 
   mutate(est_ci = paste0(estimate," (",
@@ -46,9 +46,9 @@ husbands_svysummary <- svysummary(husbands_svy,
 
 husbands_count <- couples  %>% 
   dplyr::filter(!is.na(h_sampleweight), h_sampleweight > 0) %>% 
-  summarize_at(vars(one_of(c(continuous_vars[regexpr("^h_",continuous_vars)>0],
-                             proportion_vars[regexpr("^h_",proportion_vars)>0],
-                             grouped_vars[regexpr("^h_",grouped_vars)>0]))),
+  summarize_at(vars(one_of(c(continuous_vars[regexpr("^(h_|hh_)",continuous_vars)>0],
+                             proportion_vars[regexpr("^(h_|hh_)",proportion_vars)>0],
+                             grouped_vars[regexpr("^(h_|hh_)",grouped_vars)>0]))),
                list(n = ~sum(!is.na(.)))) %>% 
   pivot_longer(names_to="variable",values_to="n",cols=everything()) %>% 
   mutate(variable = str_replace(variable,"_n$",""))
@@ -65,9 +65,9 @@ wives_svy <- couples  %>%
                    variance = "YG",pps = "brewer")
 
 wives_svysummary <- svysummary(wives_svy,
-                                  c_vars = continuous_vars[regexpr("^w_",continuous_vars)>0],
-                                  p_vars = proportion_vars[regexpr("^w_",proportion_vars)>0],
-                                  g_vars = grouped_vars[regexpr("^w_",grouped_vars)>0]
+                                  c_vars = continuous_vars[regexpr("^(w_|hh_)",continuous_vars)>0],
+                                  p_vars = proportion_vars[regexpr("^(w_|hh_)",proportion_vars)>0],
+                                  g_vars = grouped_vars[regexpr("^(w_|hh_)",grouped_vars)>0]
 ) %>% 
   mutate_at(vars(estimate,lci,uci),~round(.,1)) %>% 
   mutate(est_ci = paste0(estimate," (",
@@ -75,9 +75,9 @@ wives_svysummary <- svysummary(wives_svy,
 
 wives_count <- couples  %>% 
   dplyr::filter(!is.na(w_sampleweight), w_sampleweight > 0) %>% 
-  summarize_at(vars(one_of(c(continuous_vars[regexpr("^w_",continuous_vars)>0],
-                             proportion_vars[regexpr("^w_",proportion_vars)>0],
-                             grouped_vars[regexpr("^w_",grouped_vars)>0]))),
+  summarize_at(vars(one_of(c(continuous_vars[regexpr("^(w_|hh_)",continuous_vars)>0],
+                             proportion_vars[regexpr("^(w_|hh_)",proportion_vars)>0],
+                             grouped_vars[regexpr("^(w_|hh_)",grouped_vars)>0]))),
                list(n = ~sum(!is.na(.)))) %>% 
   pivot_longer(names_to="variable",values_to="n",cols=everything()) %>% 
   mutate(variable = str_replace(variable,"_n$",""))
