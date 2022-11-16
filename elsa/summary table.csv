@@ -10,7 +10,7 @@ h_children,2.4,2.3,2.5,Continuous,NA,"2.4 (2.3, 2.5)",Husband,1019
 h_lengthmar,45.8,44.2,47.3,Continuous,NA,"45.8 (44.2, 47.3)",Husband,851
 h_moderate_pa,0.6,0.6,0.7,Continuous,NA,"0.6 (0.6, 0.7)",Husband,1019
 h_vigorous_pa,0.2,0.2,0.2,Continuous,NA,"0.2 (0.2, 0.2)",Husband,1019
-hh_size,-11.5,-12,-11.1,Continuous,NA,"-11.5 (-12, -11.1)",Husband,1019
+hh_size,2,2,2,Continuous,NA,"2 (2, 2)",Husband,1019
 hh_wealth,482661.1,357789.8,607532.3,Continuous,NA,"482661.1 (357789.8, 607532.3)",Husband,1017
 hh_income,31747.4,29095.4,34399.3,Continuous,NA,"31747.4 (29095.4, 34399.3)",Husband,1017
 hh_consumption,1944,211.6,3676.5,Continuous,NA,"1944 (211.6, 3676.5)",Husband,928
@@ -72,7 +72,7 @@ w_children,2.4,2.2,2.5,Continuous,NA,"2.4 (2.2, 2.5)",Wife,988
 w_lengthmar,46.7,45.2,48.3,Continuous,NA,"46.7 (45.2, 48.3)",Wife,838
 w_moderate_pa,0.6,0.5,0.6,Continuous,NA,"0.6 (0.5, 0.6)",Wife,988
 w_vigorous_pa,0.1,0.1,0.2,Continuous,NA,"0.1 (0.1, 0.2)",Wife,988
-hh_size,-11.8,-12.2,-11.4,Continuous,NA,"-11.8 (-12.2, -11.4)",Wife,988
+hh_size,2,2,2,Continuous,NA,"2 (2, 2)",Wife,988
 hh_wealth,481589.9,361707.4,601472.4,Continuous,NA,"481589.9 (361707.4, 601472.4)",Wife,986
 hh_income,31537.4,28859.5,34215.3,Continuous,NA,"31537.4 (28859.5, 34215.3)",Wife,986
 hh_consumption,2080.8,151.7,4009.8,Continuous,NA,"2080.8 (151.7, 4009.8)",Wife,899
