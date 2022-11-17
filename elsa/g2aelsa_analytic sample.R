@@ -8,7 +8,9 @@ couples <- readRDS(paste0(path_g2a_family_folder,"/working/elsa/G2A ELSA Couples
                                 TRUE ~ 0),
          h_eligible = case_when(h_diagnosed_bp == 1 ~ 1,
                                 !is.na(h_sbp) & !is.na(h_dbp) ~ 1,
-                                TRUE ~ 0)) 
+                                TRUE ~ 0),
+         hh_htn = case_when(w_htn == 1 & h_htn == 1 ~ 1,
+                            TRUE ~ 0)) 
 
 
 couples <- couples %>% 

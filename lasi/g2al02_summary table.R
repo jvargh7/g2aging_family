@@ -15,7 +15,7 @@ proportion_vars <- c(paste0(rep(c("w_","h_"),each=18),
                             "fasting","screened_dm","diagnosed_dm","medication_dm",
                             "heavydrinker",
                             "pregnant","employment","retirement","smokeever","smokecurr","alcohol","lengthmar_ge10",
-                            "insurance","dm","htn")),"residence","hh_lengthmar_ge10")
+                            "insurance","dm","htn")),"residence","hh_lengthmar_ge10","hh_htn")
 
 grouped_vars <- c("w_education","w_education_h","h_education","h_education_h","in_caste","in_religion",
                   "hh_wealthquintile","hh_consumptionquintile","hh_incometertile",

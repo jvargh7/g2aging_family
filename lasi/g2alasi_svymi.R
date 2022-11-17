@@ -91,6 +91,10 @@ before_imputation <- couples %>%
   dplyr::select(-w_education_h,-h_education_h,
                 -hh_wealthquintile)
 
+before_imputation %>% 
+  dplyr::select(-one_of(c("coupleid","hhid","w_personid","h_personid","h_sampleweight","state","psu"))) %>% 
+  mutate(any_missing = rowSums(is.na(.))) %>% 
+  summarize(prop = mean(any_missing>0))
 
 interaction_terms <- c("w_htn_residence","h_htn_residence",
                        "w_htn_h_education_2","w_htn_h_education_3",

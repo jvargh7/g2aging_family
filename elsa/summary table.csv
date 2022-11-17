@@ -29,6 +29,7 @@ h_lengthmar_ge10,99.9,99.5,100.2,Proportion,NA,"99.9 (99.5, 100.2)",Husband,851
 h_insurance,8,3.3,12.6,Proportion,NA,"8 (3.3, 12.6)",Husband,1019
 h_htn,67.8,64.9,70.7,Proportion,NA,"67.8 (64.9, 70.7)",Husband,1019
 hh_lengthmar_ge10,99.9,99.6,100.2,Proportion,NA,"99.9 (99.6, 100.2)",Husband,882
+hh_htn,47.1,43.2,50.9,Proportion,NA,"47.1 (43.2, 50.9)",Husband,1019
 h_education_h,26.3,20,32.6,Grouped,Less than lower secondary,"26.3 (20, 32.6)",Husband,976
 h_education_h,19.4,15.8,23.1,Grouped,Tertiary,"19.4 (15.8, 23.1)",Husband,976
 h_education_h,49.4,45.2,53.7,Grouped,Upper secondary and vocational training,"49.4 (45.2, 53.7)",Husband,976
@@ -91,6 +92,7 @@ w_lengthmar_ge10,99.8,99.5,100.2,Proportion,NA,"99.8 (99.5, 100.2)",Wife,838
 w_insurance,8.2,4.2,12.2,Proportion,NA,"8.2 (4.2, 12.2)",Wife,988
 w_htn,64.5,61,67.9,Proportion,NA,"64.5 (61, 67.9)",Wife,988
 hh_lengthmar_ge10,99.9,99.5,100.2,Proportion,NA,"99.9 (99.5, 100.2)",Wife,854
+hh_htn,45.6,41.4,49.8,Proportion,NA,"45.6 (41.4, 49.8)",Wife,988
 w_education_h,32,25.8,38.1,Grouped,Less than lower secondary,"32 (25.8, 38.1)",Wife,874
 w_education_h,13.5,9.8,17.1,Grouped,Tertiary,"13.5 (9.8, 17.1)",Wife,874
 w_education_h,43.1,37.1,49,Grouped,Upper secondary and vocational training,"43.1 (37.1, 49)",Wife,874

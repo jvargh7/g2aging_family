@@ -58,6 +58,7 @@ h_insurance,21.5,20.6,22.4,Proportion,NA,"21.5 (20.6, 22.4)",22389
 h_htn,42.8,41.9,43.8,Proportion,NA,"42.8 (41.9, 43.8)",22389
 residence,69.2,66.9,71.4,Proportion,NA,"69.2 (66.9, 71.4)",22389
 hh_lengthmar_ge10,99.6,99.5,99.7,Proportion,NA,"99.6 (99.5, 99.7)",21924
+hh_htn,19.8,19,20.5,Proportion,NA,"19.8 (19, 20.5)",22389
 w_education,7.4,6.7,8,Grouped,Higher,"7.4 (6.7, 8)",10588
 w_education,8.4,7.9,8.9,Grouped,No education,"8.4 (7.9, 8.9)",10588
 w_education,20.2,19.4,21.1,Grouped,Primary,"20.2 (19.4, 21.1)",10588
