@@ -1,5 +1,9 @@
 setwd("G:\\My Drive\\Crossnation study\\Dataset")
 
+if(Sys.info()["user"] == "JVARGH7"){
+  coupleCHARLS <- read.csv(paste0(path_g2a_family_folder,"/working/charls/coupleCHARLS.csv"))
+  
+}
 coupleCHARLS <- read.csv("coupleCHARLS.csv")
 coupleCHARLS <- coupleCHARLS[, -1]
 
@@ -24,6 +28,10 @@ cohen.kappa(coupleCHARLS[, c(57, 58)])
 #Descriptive Table 1
 require(srvyr)
 colnames(coupleCHARLS)
+if(Sys.info()["user"] == "JVARGH7"){
+  source("C:/code/external/functions/survey/svysummary.R")
+  
+}
 source("svysummary.R")
 
 #continuous variable
@@ -83,7 +91,7 @@ couples_count <- coupleCHARLS %>%
 left_join(couples_svysummary,
           couples_count,
           by = "variable") %>% 
-  write_csv(.,"CHARLS_table1.csv")
+  write_csv(.,"charls/CHARLS_table1.csv")
 
 #-----------------------------------------------
 #multiple imputation
@@ -92,7 +100,7 @@ require(mice)
 
 #define factor variables
 colnames(coupleCHARLS)
-coupleCHARLS[, c(9:11, 14:20, 25:28, 37:42, 49:50, 52:64)] <- lapply(coupleCHARLS[, c(9:11, 14:20, 25:28, 37:42, 49:50, 52:64)], factor)
+# coupleCHARLS[, c(9:11, 14:20, 25:28, 37:42, 49:50, 52:64)] <- lapply(coupleCHARLS[, c(9:11, 14:20, 25:28, 37:42, 49:50, 52:64)], factor)
 
 before_imputation <- coupleCHARLS %>% 
   dplyr::select(ID, hhid, hhcoupid, hh_weight, r_indweight, s_indweight,
@@ -100,6 +108,9 @@ before_imputation <- coupleCHARLS %>%
   mutate_at(vars(w_moderate_pa, w_vigorous_pa,
                  h_moderate_pa, h_vigorous_pa,
                  residence, hh_lengthmar),~as.numeric(.)) %>% 
+  mutate_at(vars(w_htn,h_htn,h_diagnosed_bp,w_diagnosed_bp,
+                 h_diagnosed_dm,w_diagnosed_dm,h_heavydrinker,w_heavydrinker,
+                 hh_htn,h_hukou,w_hukou),function(x) as.numeric(levels(x))[x]) %>% 
   # Step 1: One hot encoding
   mutate(
     w_education_2 = case_when(w_education_h == "2" ~ 1,
@@ -115,7 +126,7 @@ before_imputation <- coupleCHARLS %>%
                               !is.na(h_education_h) ~ 0,
                               TRUE ~ NA_real_),
     
-    hh_lengthmar10 = case_when(hh_lengthmar >= 10 ~ 1,
+    hh_lengthmar_ge10 = case_when(hh_lengthmar >= 10 ~ 1,
                                TRUE ~ 0),
     
     w_ge65 = case_when(w_age >= 65 ~ 1,
@@ -124,12 +135,16 @@ before_imputation <- coupleCHARLS %>%
                        TRUE ~ 0),
     
     hh_low = case_when(hh_wealthquintile == "Low" ~ 1,
+                       is.na(hh_wealthquintile) ~ NA_real_,
                        TRUE ~ 0),
     hh_medium = case_when(hh_wealthquintile == "Medium" ~ 1,
+                          is.na(hh_wealthquintile) ~ NA_real_,
                           TRUE ~ 0),
     hh_high = case_when(hh_wealthquintile == "High" ~ 1,
+                        is.na(hh_wealthquintile) ~ NA_real_,
                         TRUE ~ 0),
     hh_highest = case_when(hh_wealthquintile == "Highest" ~ 1,
+                           is.na(hh_wealthquintile) ~ NA_real_,
                            TRUE ~ 0)
   ) %>% 
   
@@ -164,7 +179,8 @@ before_imputation <- coupleCHARLS %>%
          h_htn_hh_highest = h_htn*hh_highest
   ) %>% 
   dplyr::select(-w_education_h,-h_education_h,
-                -hh_wealthquintile)
+                -hh_wealthquintile) %>% 
+  mutate_at(vars(hh_lengthmar_ge10),~as.numeric(as.character(.)))
 
 interaction_terms <- c("w_htn_residence","h_htn_residence",
                        "w_htn_h_education_2","w_htn_h_education_3",
@@ -209,15 +225,7 @@ for(i_t in interaction_terms){
   pred[c(htn_term,em_term),i_t] <- 0
 }
 
-for(i_t in interaction_terms){
-  print(i_t)
-  htn_term = str_extract(i_t,"^(w|h)_htn")
-  em_term = str_replace(i_t,pattern=paste0(htn_term,"_"),replacement = "")
-  method[i_t] = paste0("~I(",htn_term,"*",em_term,")")
-  
-  # Do not use interaction terms for imputation of the source variables
-  pred[c(htn_term,em_term),i_t] <- 0
-}
+
 
 # Takes ~1.5 hours
 mi_dfs <- mice(before_imputation,
@@ -225,17 +233,30 @@ mi_dfs <- mice(before_imputation,
                pred = pred,
                m=10,maxit=50,seed=500)
 
-saveRDS(mi_dfs, "G2A CHARLS Couples mi_dfs.RDS")
+saveRDS(mi_dfs, paste0(path_g2a_family_folder,"/working/charls/G2A CHARLS Couples mi_dfs JV.RDS"))
 
 #----------------------------------------------
 #Poisson with MI data
-mi_dfs <- readRDS("G2A CHARLS Couples mi_dfs.RDS")
+if(Sys.info()["user"] == "JVARGH7"){
+  mi_dfs <- readRDS(paste0(path_g2a_family_folder,"/working/charls/G2A CHARLS Couples mi_dfs JV.RDS"))
+  source("charls/g2ahrs_poisson regression equations_CHARLS.R")
+  source("C:/code/external/functions/survey/mice_coef_svyglm.R")
+  
+  source("C:/code/external/functions/survey/mice_contrasts_svyglm.R")
+  
+  
+} else{
+  mi_dfs <- readRDS("G2A CHARLS Couples mi_dfs.RDS")
+source("g2ahrs_poisson regression equations_CHARLS.R")
+  source("mice_coef_svyglm.R")
+  source("mice_contrasts_svyglm.R")
+}
 
 require(mice)
 require(srvyr)
 require(survey)
 
-source("g2ahrs_poisson regression equations_CHARLS.R")
+
 
 #check if I have the same variables in this function
 colnames(mi_dfs$data)
@@ -279,7 +300,7 @@ for(i in 1:mi_dfs$m){
 }
 
 # Pooling coefficients ------------
-source("mice_coef_svyglm.R")
+
 # Check https://github.com/jvargh7/functions/blob/main/survey/mice_coef_svyglm.R
 # You would also have to download the following:
 # a. https://github.com/jvargh7/functions/blob/main/imputation/adjusted_ci.R
@@ -313,9 +334,9 @@ bind_rows(
   overall_h6_out %>% mutate(model = "H6")
   
 ) %>% 
-  write_csv(.,"g2al03_poisson regression with multiple imputation.csv")
+  write_csv(.,"charls/g2al03_poisson regression with multiple imputation.csv")
 
-source("mice_contrasts_svyglm.R")
+
 # Check: https://github.com/jvargh7/functions/blob/main/survey/mice_contrasts_svyglm.R
 # You would also have to download the following:
 # https://github.com/jvargh7/functions/blob/main/preprocessing/prepare_contrasts.R
@@ -346,8 +367,8 @@ contrasts_h5_out_wlt4 = mice_contrasts_svyglm(svymodel_list = overall_h5,modifie
 contrasts_w5_out_wlt5 = mice_contrasts_svyglm(svymodel_list = overall_w5,modifier = "hh_highest",exposure = "h_htn")
 contrasts_h5_out_wlt5 = mice_contrasts_svyglm(svymodel_list = overall_h5,modifier = "hh_highest",exposure = "w_htn")
 
-contrasts_w6_out = mice_contrasts_svyglm(svymodel_list = overall_w6,modifier = "hh_lengthmar_ge10",exposure = "h_htn")
-contrasts_h6_out = mice_contrasts_svyglm(svymodel_list = overall_h6,modifier = "hh_lengthmar_ge10",exposure = "w_htn")
+contrasts_w6_out = mice_contrasts_svyglm(svymodel_list = overall_w6,modifier = "hh_lengthmar_ge101",exposure = "h_htn")
+contrasts_h6_out = mice_contrasts_svyglm(svymodel_list = overall_h6,modifier = "hh_lengthmar_ge101",exposure = "w_htn")
 
 bind_rows(
   contrasts_w2_out %>% mutate(model = "W2"),
@@ -377,11 +398,11 @@ bind_rows(
   contrasts_h6_out %>% mutate(model = "H6")
   
 ) %>% 
-  write_csv(.,"g2al03_contrasts for poisson regression with multiple imputation.csv")
+  write_csv(.,"charls/g2al03_contrasts for poisson regression with multiple imputation.csv")
 
 #----------------------------------
 #table main analysis
-htn <- read_csv("g2al03_poisson regression with multiple imputation.csv") %>% 
+htn <- read_csv("charls/g2al03_poisson regression with multiple imputation.csv") %>% 
   dplyr::filter(model %in% c("W1","H1")) %>% 
   mutate(outcome = "Hypertension")
 
@@ -391,19 +412,19 @@ table_main <- htn %>%
   dplyr::select(model,outcome,iv,RR) %>% 
   pivot_wider(names_from = c("model","outcome"),values_from="RR")
 
-write_csv(table_main,"table_main analysis results.csv")
+write_csv(table_main,"charls/table_main analysis results.csv")
 
 #-----------------------------------------
 #figure emm analysis
-htn <- read_csv("g2al03_contrasts for poisson regression with multiple imputation.csv") %>% 
+htn <- read_csv("charls/g2al03_contrasts for poisson regression with multiple imputation.csv") %>% 
   mutate(outcome = "Hypertension")
 
-htn_main <- read_csv("g2al03_poisson regression with multiple imputation.csv") %>% 
+htn_main <- read_csv("charls/g2al03_poisson regression with multiple imputation.csv") %>% 
   dplyr::filter(model %in% c("W1","H1"),iv %in% c("w_htn","h_htn")) %>% 
   mutate(outcome = "Hypertension",
          label = "Overall")
 
-contrast_map <- readxl::read_excel("LASI Contrast Map.xlsx") %>% 
+contrast_map <- readxl::read_excel("lasi/LASI Contrast Map.xlsx") %>% 
   dplyr::filter(!is.na(label))
 
 
@@ -437,7 +458,7 @@ tab_stratum %>%
   dplyr::select(label,sex_self,RR) %>% 
   pivot_wider(names_from="sex_self",values_from="RR") %>% 
   
-  write_csv(.,"table_emm analysis results.csv")
+  write_csv(.,"charls/table_emm analysis results.csv")
 
 figA <- tab_stratum %>% dplyr::filter(outcome == "Hypertension") %>% 
   ggplot(data=.,
