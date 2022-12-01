@@ -2,10 +2,14 @@ setwd("G:\\My Drive\\Crossnation study\\Dataset")
 
 if(Sys.info()["user"] == "JVARGH7"){
   coupleCHARLS <- read.csv(paste0(path_g2a_family_folder,"/working/charls/coupleCHARLS.csv"))
+  coupleCHARLS <- coupleCHARLS[, -1]
   
+  
+} else{
+  coupleCHARLS <- read.csv("coupleCHARLS.csv")
+  coupleCHARLS <- coupleCHARLS[, -1]
 }
-coupleCHARLS <- read.csv("coupleCHARLS.csv")
-coupleCHARLS <- coupleCHARLS[, -1]
+
 
 library(car)
 library(tidyverse)
@@ -88,7 +92,7 @@ couples_count <- coupleCHARLS %>%
   pivot_longer(names_to = "variable", values_to = "n",cols = everything()) %>% 
   mutate(variable = str_replace(variable,"_n$",""))
 
-left_join(couples_svysummary,
+full_join(couples_svysummary,
           couples_count,
           by = "variable") %>% 
   write_csv(.,"charls/CHARLS_table1.csv")
@@ -108,9 +112,9 @@ before_imputation <- coupleCHARLS %>%
   mutate_at(vars(w_moderate_pa, w_vigorous_pa,
                  h_moderate_pa, h_vigorous_pa,
                  residence, hh_lengthmar),~as.numeric(.)) %>% 
-  mutate_at(vars(w_htn,h_htn,h_diagnosed_bp,w_diagnosed_bp,
-                 h_diagnosed_dm,w_diagnosed_dm,h_heavydrinker,w_heavydrinker,
-                 hh_htn,h_hukou,w_hukou),function(x) as.numeric(levels(x))[x]) %>% 
+  # mutate_at(vars(w_htn,h_htn,h_diagnosed_bp,w_diagnosed_bp,
+  #                h_diagnosed_dm,w_diagnosed_dm,h_heavydrinker,w_heavydrinker,
+  #                hh_htn,h_hukou,w_hukou),function(x) as.numeric(levels(x))[x]) %>% 
   # Step 1: One hot encoding
   mutate(
     w_education_2 = case_when(w_education_h == "2" ~ 1,
