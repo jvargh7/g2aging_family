@@ -338,7 +338,7 @@ bind_rows(
   overall_h6_out %>% mutate(model = "H6")
   
 ) %>% 
-  write_csv(.,"charls/g2al03_poisson regression with multiple imputation.csv")
+  write_csv(.,"charls/g2ac03_poisson regression with multiple imputation.csv")
 
 
 # Check: https://github.com/jvargh7/functions/blob/main/survey/mice_contrasts_svyglm.R
@@ -402,7 +402,7 @@ bind_rows(
   contrasts_h6_out %>% mutate(model = "H6")
   
 ) %>% 
-  write_csv(.,"charls/g2al03_contrasts for poisson regression with multiple imputation.csv")
+  write_csv(.,"charls/g2ac03_contrasts for poisson regression with multiple imputation.csv")
 
 #----------------------------------
 #table main analysis
