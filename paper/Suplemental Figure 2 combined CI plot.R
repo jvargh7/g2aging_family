@@ -189,4 +189,4 @@ ggarrange(figA,
           figC,
           common.legend=TRUE,nrow=1,ncol=4,widths = c(4.2,1.5,1.5, 1.5)) %>% 
   ggsave(.,filename = paste0(path_g2a_family_folder,"/figures/Supplemental Figure 2_combined CI.jpeg"),
-         width = 10, height=6,units='in',dpi = 600)
+         width = 14, height=6,units='in',dpi = 600)
