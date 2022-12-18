@@ -114,7 +114,7 @@ figA <- figA_df %>%
   scale_y_discrete(limits = rev) +
   scale_x_continuous(limits=c(0.75,1.5),breaks=seq(0.75,1.5,by=0.25)) +
   theme_bw() +
-  # xlab("Prevalence Ratio (95% CI)") +
+  xlab("Prevalence Ratio (95% CI)") +
   ylab("") +
   geom_vline(xintercept=1.0,color="black",linetype=2) +
   scale_color_manual(name = "Prevalence Ratio in ",values=c("Husband"="darkblue","Wife"="red","Husband:Wife"="black")) +
@@ -134,7 +134,7 @@ figB <- figB_df %>%
   scale_y_discrete(limits = rev) +
   scale_x_continuous(limits=c(0.75,1.5),breaks=seq(0.75,1.5,by=0.25)) +
   theme_bw() +
-  # xlab("Prevalence Ratio (95% CI)") +
+  xlab("Prevalence Ratio (95% CI)") +
   ylab("") +
   geom_vline(xintercept=1.0,color="black",linetype=2) +
   scale_color_manual(name = "Prevalence Ratio in ",values=c("Husband"="darkblue","Wife"="red","Husband:Wife"="black")) +
@@ -154,7 +154,7 @@ figC <- figC_df %>%
   scale_y_discrete(limits = rev) +
   scale_x_continuous(limits=c(0.75,1.5),breaks=seq(0.75,1.5,by=0.25)) +
   theme_bw() +
-  # xlab("Prevalence Ratio (95% CI)") +
+  xlab("Prevalence Ratio (95% CI)") +
   ylab("") +
   geom_vline(xintercept=1.0,color="black",linetype=2) +
   scale_color_manual(name = "Prevalence Ratio in ",values=c("Husband"="darkblue","Wife"="red","Husband:Wife"="black")) +
@@ -175,7 +175,7 @@ figD <- figD_df %>%
   scale_y_discrete(limits = rev) +
   scale_x_continuous(limits=c(0.75,1.5),breaks=seq(0.75,1.5,by=0.25)) +
   theme_bw() +
-  # xlab("Prevalence Ratio (95% CI)") +
+  xlab("Prevalence Ratio (95% CI)") +
   ylab("") +
   geom_vline(xintercept=1.0,color="black",linetype=2) +
   scale_color_manual(name = "Prevalence Ratio in ",values=c("Husband"="darkblue","Wife"="red","Husband:Wife"="black")) +
@@ -192,4 +192,5 @@ ggarrange(figA,figB,figC,figD,
           common.legend=TRUE,
           legend="bottom",
           nrow=2,ncol=2) %>% 
-  ggsave(.,filename=paste0(path_g2a_family_folder,"/figures/figure_combined crossnational comparison.png"),width=8,height=8)
+  ggsave(.,filename=paste0(path_g2a_family_folder,"/figures/figure_combined crossnational comparison.png"),
+         width=8,height=5)
