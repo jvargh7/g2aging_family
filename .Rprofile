@@ -4,6 +4,7 @@ require(haven)
 if(Sys.info()["user"]=="JVARGH7"){
   path_g2a_data <- "C:/Cloud/OneDrive - Emory University/data/G2Aging"
   path_g2a_family_folder <- "C:/Cloud/OneDrive - Emory University/Papers/Crossnational Family Clustering"
+  path_g2a_concordance_folder <- "C:/Cloud/OneDrive - Emory University/Papers/Crossnational Couples BP Control"
 }
 
 if(Sys.info()["user"]=="DCHOI30"){
