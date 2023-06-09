@@ -80,25 +80,27 @@ figB_df <- bind_rows(hrs_couplediff,
 
 # Figure C -----------
 
-figC_df <- read_csv("pooled/g2ap01_contrasts for poisson regression with multiple imputation.csv") %>% 
-  dplyr::filter(term %in% c("h_htn at countryELSA=0",
-                            "h_htn at countryELSA=1",
-                            "h_htn at countryCHARLS=1",
-                            "h_htn at countryLASI=1")) %>% 
-  mutate(survey = c("USA","England","China","India")) %>% 
+figC_df <- read_csv("pooled/g2ap01_contrasts for poisson regression with multiple imputation.csv") %>%
+  dplyr::filter(term %in% c("Interaction of h_htn:countryELSA",
+                            "Interaction of h_htn:countryCHARLS",
+                            "Interaction of h_htn:countryLASI")) %>%
+  mutate(survey = c("England","China","India")) %>%
+  bind_rows(data.frame(survey = "USA",
+                       theta_D = 0)) %>% 
   mutate(sex_self = "Wife",
-         est = exp(theta_D)) %>% 
+         est = exp(theta_D)) %>%
   mutate(survey = factor(survey,levels=c("USA","England","China","India")))
 
 # Figure D ---------
-figD_df <- read_csv("pooled/g2ap01_contrasts for poisson regression with multiple imputation.csv") %>% 
-  dplyr::filter(term %in% c("w_htn at countryELSA=0",
-                            "w_htn at countryELSA=1",
-                            "w_htn at countryCHARLS=1",
-                            "w_htn at countryLASI=1")) %>% 
-  mutate(survey = c("USA","England","China","India")) %>% 
+figD_df <- read_csv("pooled/g2ap01_contrasts for poisson regression with multiple imputation.csv") %>%
+  dplyr::filter(term %in% c("Interaction of w_htn:countryELSA",
+                            "Interaction of w_htn:countryCHARLS",
+                            "Interaction of w_htn:countryLASI")) %>%
+  mutate(survey = c("England","China","India")) %>%
+  bind_rows(data.frame(survey = "USA",
+                       theta_D = 0)) %>% 
   mutate(sex_self = "Husband",
-         est = exp(theta_D)) %>% 
+         est = exp(theta_D)) %>%
   mutate(survey = factor(survey,levels=c("USA","England","China","India")))
 
 
@@ -187,10 +189,18 @@ figD <- figD_df %>%
 
 
 require(ggpubr)
-ggarrange(figA,figB,figC,figD,
-          labels=LETTERS[1:4],
-          common.legend=TRUE,
-          legend="bottom",
-          nrow=2,ncol=2) %>% 
-  ggsave(.,filename=paste0(path_g2a_family_folder,"/figures/figure_combined crossnational comparison.png"),
-         width=8,height=5)
+ggarrange(figA,figB,
+          labels=LETTERS[1:2],
+          common.legend = TRUE,
+          legend = "bottom") %>% 
+  ggsave(.,filename=paste0(path_g2a_family_folder,"/figures/figure_pooled and gender differences interaction.png"),
+         width=8,height=3)
+
+
+
+ggarrange(figC,figD,
+          labels=LETTERS[1:2],
+          common.legend = TRUE,
+          legend = "bottom") %>% 
+  ggsave(.,filename=paste0(path_g2a_family_folder,"/figures/figure_pooled country differences interaction.png"),
+         width=8,height=3)

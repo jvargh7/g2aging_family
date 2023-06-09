@@ -39,16 +39,23 @@ hh_vars <- c("caste","in_caste","religion","in_religion","hh_wealth","hh_income"
 
 male <- bind_rows(r_male %>% mutate(type = "Respondent"),
           s_male %>% mutate(type = "Spouse"))  %>% 
-  g2alasi_preprocessing(.) %>% 
-  rename_at(vars(-one_of(c(survey_vars,hh_vars,"coupleid"))),~paste0("h_",.))
+  g2alasi_preprocessing(.) 
+
+saveRDS(male,paste0(path_g2a_family_folder,"/working/lasi/G2A LASI male.RDS"))  
 
 female <- bind_rows(r_female %>% mutate(type = "Respondent"),
                   s_female %>% mutate(type = "Spouse"))  %>% 
-  g2alasi_preprocessing(.) %>% 
-  rename_at(vars(-one_of(c(survey_vars,hh_vars,"coupleid"))),~paste0("w_",.))
-  
-couples <- left_join(male,
-                     female %>% dplyr::select(-one_of(survey_vars,hh_vars)),
+  g2alasi_preprocessing(.) 
+saveRDS(female,paste0(path_g2a_family_folder,"/working/lasi/G2A LASI female.RDS"))  
+
+
+
+couples <- left_join(male %>% 
+                       rename_at(vars(-one_of(c(survey_vars,hh_vars,"coupleid"))),~paste0("h_",.))
+                     ,
+                     female %>% 
+                       rename_at(vars(-one_of(c(survey_vars,hh_vars,"coupleid"))),~paste0("w_",.)) %>% 
+                       dplyr::select(-one_of(survey_vars,hh_vars)),
                      by="coupleid") %>% 
   distinct(coupleid,.keep_all=TRUE) %>% 
   dplyr::filter(!h_spouseid %in% c(0,NA_real_), !w_spouseid %in% c(0,NA_real_))

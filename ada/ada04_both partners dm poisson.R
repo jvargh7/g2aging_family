@@ -15,16 +15,19 @@ library(survey)
 for(i in 1:lasi_mi$m){
   df = bind_rows(
     complete(hrs_mi,action = i) %>% 
+      dplyr::filter(w_diagnosed_dm == 1, h_diagnosed_dm == 1) %>% 
       # dplyr::rename(hh_sampleweight = r_indweight) %>% 
       dplyr::select(one_of(id_selected),one_of(w_selected),one_of(h_selected),one_of(hh_selected),h_bp_control,w_bp_control) %>% 
       mutate(country = 1,
              w_sampleweight = hh_sampleweight,
              h_sampleweight = hh_sampleweight),
     complete(elsa_mi,action = i) %>% 
+      dplyr::filter(w_diagnosed_dm == 1, h_diagnosed_dm == 1) %>% 
       dplyr::select(one_of(id_selected),one_of(w_selected),one_of(h_selected),one_of(hh_selected),h_bp_control,w_bp_control) %>% 
       mutate(country = 2,
              residence = 0.5),
     complete(charls_mi,action = i) %>% 
+      dplyr::filter(w_diagnosed_dm == 1, h_diagnosed_dm == 1) %>% 
       # dplyr::rename(hh_sampleweight = r_indweight) %>% 
       dplyr::select(one_of(id_selected),one_of(w_selected),one_of(h_selected),one_of(hh_selected),h_bp_control,w_bp_control) %>% 
       mutate(country = 3,
@@ -34,6 +37,7 @@ for(i in 1:lasi_mi$m){
                                                                                        x == 0 ~ 0,
                                                                                        TRUE ~ NA_real_)),
     complete(lasi_mi,action = i) %>% 
+      dplyr::filter(w_diagnosed_dm == 1, h_diagnosed_dm == 1) %>% 
       dplyr::select(one_of(id_selected),one_of(w_selected),one_of(h_selected),one_of(hh_selected),h_bp_control,w_bp_control) %>% 
       mutate(country = 4,
              w_sampleweight = h_sampleweight)
@@ -50,9 +54,6 @@ for(i in 1:lasi_mi$m){
                                                                      x == "Formal" ~ "Employed",
                                                                      TRUE ~ as.character(x)));
   
-  
-  df = df %>% 
-    dplyr::filter(country != "ELSA")
   
   svy_des_wives = df  %>% 
     dplyr::filter(w_diagnosed_dm == 1) %>% 
@@ -89,8 +90,8 @@ for(i in 1:lasi_mi$m){
   
   overall_wa1[[i]] = svyglm(wa1,design=svy_des_wives,family=quasipoisson());
   overall_ha1[[i]] = svyglm(ha1,design=svy_des_husbands,family=quasipoisson());
-  overall_wa2[[i]] = svyglm(wa2,design=svy_des_wives,family=quasipoisson());
-  overall_ha2[[i]] = svyglm(ha2,design=svy_des_husbands,family=quasipoisson());
+  # overall_wa2[[i]] = svyglm(wa2,design=svy_des_wives,family=quasipoisson());
+  # overall_ha2[[i]] = svyglm(ha2,design=svy_des_husbands,family=quasipoisson());
   
   
   gc();rm(df);rm(svy_des)
@@ -105,41 +106,42 @@ source("C:/code/external/functions/survey/mice_coef_svyglm.R")
 # b. https://github.com/jvargh7/functions/tree/main/preprocessing
 overall_wa1_out = mice_coef_svyglm(overall_wa1)
 overall_ha1_out = mice_coef_svyglm(overall_ha1)
-overall_wa2_out = mice_coef_svyglm(overall_wa2)
-overall_ha2_out = mice_coef_svyglm(overall_ha2)
+# overall_wa2_out = mice_coef_svyglm(overall_wa2)
+# overall_ha2_out = mice_coef_svyglm(overall_ha2)
 
 bind_rows(
   overall_wa1_out %>% mutate(model = "WA1"),
-  overall_ha1_out %>% mutate(model = "HA1"),
-  overall_wa2_out %>% mutate(model = "WA2"),
-  overall_ha2_out %>% mutate(model = "HA2")) %>% 
-  write_csv(.,"ada/ada03_poisson regression with multiple imputation.csv")
+  overall_ha1_out %>% mutate(model = "HA1")
+  # overall_wa2_out %>% mutate(model = "WA2"),
+  # overall_ha2_out %>% mutate(model = "HA2")
+  ) %>% 
+  write_csv(.,"ada/ada04_both partners dm poisson regression with multiple imputation.csv")
 
-source("C:/code/external/functions/survey/mice_contrasts_svyglm.R")
-# Check: https://github.com/jvargh7/functions/blob/main/survey/mice_contrasts_svyglm.R
-# You would also have to download the following:
-# https://github.com/jvargh7/functions/blob/main/preprocessing/prepare_contrasts.R
-# https://github.com/jvargh7/functions/blob/main/survey/contrasts_svyglm.R
-# The coefficients are in column 'RR'. The rest of the columns are for pooling multiple imputated regressions
-
+# source("C:/code/external/functions/survey/mice_contrasts_svyglm.R")
+# # Check: https://github.com/jvargh7/functions/blob/main/survey/mice_contrasts_svyglm.R
+# # You would also have to download the following:
+# # https://github.com/jvargh7/functions/blob/main/preprocessing/prepare_contrasts.R
+# # https://github.com/jvargh7/functions/blob/main/survey/contrasts_svyglm.R
+# # The coefficients are in column 'RR'. The rest of the columns are for pooling multiple imputated regressions
+# 
 # contrasts_wa2_out_ELSA = mice_contrasts_svyglm(svymodel_list = overall_wa2,modifier = "countryELSA",exposure = "h_bp_control")
 # contrasts_ha2_out_ELSA = mice_contrasts_svyglm(svymodel_list = overall_ha2,modifier="countryELSA",exposure="w_bp_control")
-
-contrasts_wa2_out_CHARLS = mice_contrasts_svyglm(svymodel_list = overall_wa2,modifier = "countryCHARLS",exposure = "h_bp_control")
-contrasts_ha2_out_CHARLS = mice_contrasts_svyglm(svymodel_list = overall_ha2,modifier="countryCHARLS",exposure="w_bp_control")
-
-contrasts_wa2_out_LASI = mice_contrasts_svyglm(svymodel_list = overall_wa2,modifier = "countryLASI",exposure = "h_bp_control")
-contrasts_ha2_out_LASI = mice_contrasts_svyglm(svymodel_list = overall_ha2,modifier="countryLASI",exposure="w_bp_control")
-
-bind_rows(
-  # contrasts_wa2_out_ELSA %>% mutate(model = "WA2 ELSA"),
-  # contrasts_ha2_out_ELSA %>% mutate(model = "HA2 ELSA"),
-  
-  contrasts_wa2_out_CHARLS %>% mutate(model = "WA2 CHARLS"),
-  contrasts_ha2_out_CHARLS %>% mutate(model = "HA2 CHARLS"),
-  
-  contrasts_wa2_out_LASI %>% mutate(model = "WA2 LASI"),
-  contrasts_ha2_out_LASI %>% mutate(model = "HA2 LASI")
-) %>% 
-  write_csv(.,"ada/ada03_contrasts for poisson regression with multiple imputation.csv")
-
+# 
+# contrasts_wa2_out_CHARLS = mice_contrasts_svyglm(svymodel_list = overall_wa2,modifier = "countryCHARLS",exposure = "h_bp_control")
+# contrasts_ha2_out_CHARLS = mice_contrasts_svyglm(svymodel_list = overall_ha2,modifier="countryCHARLS",exposure="w_bp_control")
+# 
+# contrasts_wa2_out_LASI = mice_contrasts_svyglm(svymodel_list = overall_wa2,modifier = "countryLASI",exposure = "h_bp_control")
+# contrasts_ha2_out_LASI = mice_contrasts_svyglm(svymodel_list = overall_ha2,modifier="countryLASI",exposure="w_bp_control")
+# 
+# bind_rows(
+#   contrasts_wa2_out_ELSA %>% mutate(model = "WA2 ELSA"),
+#   contrasts_ha2_out_ELSA %>% mutate(model = "HA2 ELSA"),
+#   
+#   contrasts_wa2_out_CHARLS %>% mutate(model = "WA2 CHARLS"),
+#   contrasts_ha2_out_CHARLS %>% mutate(model = "HA2 CHARLS"),
+#   
+#   contrasts_wa2_out_LASI %>% mutate(model = "WA2 LASI"),
+#   contrasts_ha2_out_LASI %>% mutate(model = "HA2 LASI")
+# ) %>% 
+#   write_csv(.,"ada/ada04_contrasts for both partners dm poisson regression.csv")
+# 

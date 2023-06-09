@@ -1,0 +1,24 @@
+variable,estimate,lci,uci,type,group,est_ci,n
+hh_size,2,2,2,Continuous,NA,"2 (2, 2)",1086
+hh_wealth,482661.1,359185.1,606137.1,Continuous,NA,"482661.1 (359185.1, 606137.1)",1084
+hh_income,31747.4,29125,34369.7,Continuous,NA,"31747.4 (29125, 34369.7)",1084
+hh_consumption,1944,230.9,3657.1,Continuous,NA,"1944 (230.9, 3657.1)",989
+hh_lengthmar,45.7,44.2,47.3,Continuous,NA,"45.7 (44.2, 47.3)",927
+hh_lengthmar_ge10,99.9,99.6,100.2,Proportion,NA,"99.9 (99.6, 100.2)",927
+hh_htn,47.1,43.2,50.9,Proportion,NA,"47.1 (43.2, 50.9)",1086
+hh_wealthquintile,14.1,7.4,20.8,Grouped,Lowest,"14.1 (7.4, 20.8)",1084
+hh_wealthquintile,20.6,10.1,31.1,Grouped,Low,"20.6 (10.1, 31.1)",1084
+hh_wealthquintile,20.9,18.1,23.6,Grouped,Medium,"20.9 (18.1, 23.6)",1084
+hh_wealthquintile,22.2,15.9,28.5,Grouped,High,"22.2 (15.9, 28.5)",1084
+hh_wealthquintile,22.2,12.8,31.5,Grouped,Highest,"22.2 (12.8, 31.5)",1084
+hh_wealthquintile,0,0,0,Grouped,NA,"0 (0, 0)",1084
+hh_consumptionquintile,11.5,7.8,15.3,Grouped,Lowest,"11.5 (7.8, 15.3)",988
+hh_consumptionquintile,19.7,15,24.4,Grouped,Low,"19.7 (15, 24.4)",988
+hh_consumptionquintile,23.7,18.6,28.9,Grouped,Medium,"23.7 (18.6, 28.9)",988
+hh_consumptionquintile,23.5,18.7,28.3,Grouped,High,"23.5 (18.7, 28.3)",988
+hh_consumptionquintile,21.5,16.7,26.3,Grouped,Highest,"21.5 (16.7, 26.3)",988
+hh_consumptionquintile,0,0,0,Grouped,NA,"0 (0, 0)",988
+hh_incometertile,21.2,17.2,25.2,Grouped,Low,"21.2 (17.2, 25.2)",1084
+hh_incometertile,38.9,33.3,44.5,Grouped,Medium,"38.9 (33.3, 44.5)",1084
+hh_incometertile,39.9,33.3,46.5,Grouped,High,"39.9 (33.3, 46.5)",1084
+hh_incometertile,0,0,0,Grouped,NA,"0 (0, 0)",1084

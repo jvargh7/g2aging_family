@@ -1,50 +1,71 @@
-source("elsa/g2aelsa_analytic sample.R")
+coupleCHARLS <- read.csv(paste0(path_g2a_family_folder,"/working/charls/coupleCHARLS.csv"))
+coupleCHARLS <- coupleCHARLS[, -1]
+coupleCHARLS$r_indweight[is.na(coupleCHARLS$r_indweight)] <- 19667
 
-continuous_vars <- c(paste0(rep(c("w_","h_"),each=9),
-                            c("sbp","dbp","weight","height",
-                              "bmi",
-                              "age","eduyr",
-                              "moderate_pa","vigorous_pa")),
-                     "hh_size","hh_lengthmar","hh_children")
 
-proportion_vars <- c(paste0(rep(c("w_","h_"),each=11),
-                            c("diagnosed_bp","medication_bp",
-                              "diagnosed_dm","medication_dm",
-                              
-                              "employment","smoke","heavydrinker","moderate_pa","vigorous_pa",
-                              "insurance","htn")),"residence","hh_lengthmar_ge10")
 
-grouped_vars <- c("w_education_h","h_education_h",
-                  "h_race","h_religion",
-                  "w_race","w_religion",
-                  "hh_wealthquintile","hh_consumptionquintile","hh_incometertile",
-                  "w_laborforce","w_smoke","h_laborforce","h_smoke"
-)
+#continuous variable
+continuous_vars <- c("h_age", "w_age",
+                     "h_sbp", "w_sbp",
+                     "h_dbp", "w_dbp",
+                     "h_height", "w_height",
+                     "h_weight", "w_weight",
+                     "h_bmi","w_bmi",
+                     "h_waistcircumference", "w_waistcircumference",
+                     "h_moderate_pa", "w_moderate_pa",
+                     "h_vigorous_pa", "w_vigorous_pa",
+                     "hh_children", "hh_size", "hh_lengthmar")
 
+proportion_vars <- c("h_diagnosed_bp", "w_diagnosed_bp",
+                     "h_diagnosed_dm", "w_diagnosed_dm",
+                     "h_heavydrinker", "w_heavydrinker",
+                     "hh_lengthmar_ge10",
+                     "w_htn", "h_htn", "hh_htn")
+
+#any factor variables
+grouped_vars <- c("h_laborforce", "w_laborforce",
+                  "h_hukou", "w_hukou",
+                  "residence",
+                  "h_smoke", "w_smoke",
+                  "h_education_h","w_education_h",
+                  "hh_incometertile", "hh_wealthquintile")
+
+
+#-----------------------------------------------
+#multiple imputation
 require(survey)
 require(mice)
 
-before_imputation <- couples %>% 
-  dplyr::select(coupleid,hhid,w_personid,h_personid,h_sampleweight,w_sampleweight,strata,psu,
-                one_of(continuous_vars),one_of(proportion_vars),one_of(grouped_vars)) %>% 
-  mutate_at(vars(strata,w_moderate_pa,w_vigorous_pa,
-                 h_moderate_pa,h_vigorous_pa,
-                 h_heavydrinker,w_heavydrinker,
-                 hh_lengthmar),~as.numeric(.)) %>% 
+#define factor variables
+colnames(coupleCHARLS)
+# coupleCHARLS[, c(9:11, 14:20, 25:28, 37:42, 49:50, 52:64)] <- lapply(coupleCHARLS[, c(9:11, 14:20, 25:28, 37:42, 49:50, 52:64)], factor)
+
+before_imputation <- coupleCHARLS %>% 
+  dplyr::select(ID, hhid, hhcoupid, hh_weight, r_indweight, s_indweight,
+                one_of(continuous_vars), one_of(proportion_vars), one_of(grouped_vars)) %>% 
+  mutate_at(vars(w_moderate_pa, w_vigorous_pa,
+                 h_moderate_pa, h_vigorous_pa,
+                 residence, hh_lengthmar),~as.numeric(.)) %>% 
+  # mutate_at(vars(w_htn,h_htn,h_diagnosed_bp,w_diagnosed_bp,
+  #                h_diagnosed_dm,w_diagnosed_dm,h_heavydrinker,w_heavydrinker,
+  #                hh_htn,h_hukou,w_hukou),function(x) as.numeric(levels(x))[x]) %>% 
   # Step 1: One hot encoding
   mutate(
-    w_education_2 = case_when(w_education_h == "Upper secondary and vocational training" ~ 1,
+    w_education_2 = case_when(w_education_h == "2" ~ 1,
                               !is.na(w_education_h) ~ 0,
                               TRUE ~ NA_real_),
-    w_education_3 = case_when(w_education_h == "Tertiary" ~ 1,
+    w_education_3 = case_when(w_education_h == "3" ~ 1,
                               !is.na(w_education_h) ~ 0,
                               TRUE ~ NA_real_),
-    h_education_2 = case_when(h_education_h == "Upper secondary and vocational training" ~ 1,
+    h_education_2 = case_when(h_education_h == "2" ~ 1,
                               !is.na(h_education_h) ~ 0,
                               TRUE ~ NA_real_),
-    h_education_3 = case_when(h_education_h == "Tertiary" ~ 1,
+    h_education_3 = case_when(h_education_h == "3" ~ 1,
                               !is.na(h_education_h) ~ 0,
                               TRUE ~ NA_real_),
+    
+    hh_lengthmar_ge10 = case_when(hh_lengthmar >= 10 ~ 1,
+                                  TRUE ~ 0),
     
     w_ge65 = case_when(w_age >= 65 ~ 1,
                        TRUE ~ 0),
@@ -52,18 +73,22 @@ before_imputation <- couples %>%
                        TRUE ~ 0),
     
     hh_low = case_when(hh_wealthquintile == "Low" ~ 1,
+                       is.na(hh_wealthquintile) ~ NA_real_,
                        TRUE ~ 0),
     hh_medium = case_when(hh_wealthquintile == "Medium" ~ 1,
+                          is.na(hh_wealthquintile) ~ NA_real_,
                           TRUE ~ 0),
     hh_high = case_when(hh_wealthquintile == "High" ~ 1,
+                        is.na(hh_wealthquintile) ~ NA_real_,
                         TRUE ~ 0),
     hh_highest = case_when(hh_wealthquintile == "Highest" ~ 1,
+                           is.na(hh_wealthquintile) ~ NA_real_,
                            TRUE ~ 0)
-    
-    
   ) %>% 
+  
   # Step 2: Modeling interactions
-  mutate(
+  mutate(w_htn_residence = residence*w_htn,
+         h_htn_residence = residence*h_htn,
          
          # Since exposure is w_htn and effect modifier is husband's education
          w_htn_h_education_2 = h_education_2*w_htn,
@@ -92,17 +117,10 @@ before_imputation <- couples %>%
          h_htn_hh_highest = h_htn*hh_highest
   ) %>% 
   dplyr::select(-w_education_h,-h_education_h,
-                -hh_wealthquintile)
+                -hh_wealthquintile) %>% 
+  mutate_at(vars(hh_lengthmar_ge10),~as.numeric(as.character(.)))
 
-
-before_imputation %>% 
-  dplyr::select(-one_of(c("coupleid","hhid","w_personid","h_personid","h_sampleweight","w_sampleweight","strata","psu"))) %>% 
-  mutate(any_missing = rowSums(is.na(.))) %>% 
-  summarize(prop = mean(any_missing>0))
-
-
-
-interaction_terms <- c(
+interaction_terms <- c("w_htn_residence","h_htn_residence",
                        "w_htn_h_education_2","w_htn_h_education_3",
                        "h_htn_w_education_2","h_htn_w_education_3",
                        "w_htn_h_ge65","h_htn_w_ge65",
@@ -117,9 +135,9 @@ mi_null <- mice(before_imputation,
 method = mi_null$method
 pred = mi_null$predictorMatrix
 
-pred[c("coupleid","hhid","w_personid","h_personid","h_sampleweight","w_sampleweight","strata","psu"),] <- 0
-pred[,c("coupleid","hhid","w_personid","h_personid","h_sampleweight","w_sampleweight","strata","psu")] <- 0
-method[c("coupleid","hhid","w_personid","h_personid","h_sampleweight","w_sampleweight","strata","psu")] <- ""
+pred[c("ID", "hhid", "hhcoupid", "hh_weight", "r_indweight", "s_indweight"),] <- 0
+pred[,c("ID", "hhid", "hhcoupid", "hh_weight", "r_indweight", "s_indweight")] <- 0
+method[c("ID", "hhid", "hhcoupid", "hh_weight", "r_indweight", "s_indweight")] <- ""
 
 
 # Impute via equation and do not use for imputation , --------
@@ -140,16 +158,15 @@ for(i_t in interaction_terms){
   htn_term = str_extract(i_t,"^(w|h)_htn")
   em_term = str_replace(i_t,pattern=paste0(htn_term,"_"),replacement = "")
   method[i_t] = paste0("~I(",htn_term,"*",em_term,")")
-  
-  # Do not use interaction terms for imputation of the source variables
   pred[c(htn_term,em_term),i_t] <- 0
 }
 
 
-# Takes ~15mins
+
+# Takes ~1.5 hours
 mi_dfs <- mice(before_imputation,
                method = method,
                pred = pred,
                m=10,maxit=50,seed=500)
 
-saveRDS(mi_dfs, paste0(path_g2a_family_folder,"/working/elsa/G2A ELSA Couples mi_dfs.RDS"))
+saveRDS(mi_dfs, paste0(path_g2a_family_folder,"/working/charls/G2A CHARLS Couples mi_dfs JV.RDS"))

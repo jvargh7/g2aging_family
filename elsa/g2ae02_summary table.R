@@ -2,6 +2,9 @@ require(srvyr)
 source("C:/code/external/functions/survey/svysummary.R")
 
 source("elsa/g2aelsa_analytic sample.R")
+summary(couples$h_age - couples$w_age)
+mean(couples$h_age < 45 | couples$w_age < 45)
+
 
 continuous_vars <- c(paste0(rep(c("w_","h_"),each=11),
                             c("sbp","dbp","weight","height",
@@ -23,6 +26,46 @@ grouped_vars <- c("w_education_h","h_education_h",
                   "hh_wealthquintile","hh_consumptionquintile","hh_incometertile",
                   "w_laborforce","w_smoke","h_laborforce","h_smoke"
 )
+
+
+# Household summary ----------
+household_svy <- couples  %>% 
+  dplyr::filter(!is.na(h_sampleweight)|!is.na(w_sampleweight)) %>% 
+  mutate(hh_sampleweight = case_when(is.na(h_sampleweight) ~ w_sampleweight,
+                                     TRUE ~ h_sampleweight)) %>% 
+  as_survey_design(.data = .,
+                   ids = psu,
+                   # strata = strata,
+                   weight = hh_sampleweight,
+                   nest = TRUE,
+                   variance = "YG",pps = "brewer")
+
+
+household_svysummary <- svysummary(household_svy,
+                                  c_vars = continuous_vars[regexpr("^(hh_)",continuous_vars)>0],
+                                  p_vars = proportion_vars[regexpr("^(hh_)",proportion_vars)>0],
+                                  g_vars = grouped_vars[regexpr("^(hh_)",grouped_vars)>0]
+) %>% 
+  mutate_at(vars(estimate,lci,uci),~round(.,1)) %>% 
+  mutate(est_ci = paste0(estimate," (",
+                         lci,", ",uci,")"))
+
+household_count <- couples  %>% 
+  dplyr::filter(!is.na(h_sampleweight)|!is.na(w_sampleweight)) %>% 
+  mutate(hh_sampleweight = case_when(is.na(h_sampleweight) ~ w_sampleweight,
+                                     TRUE ~ h_sampleweight)) %>% 
+  summarize_at(vars(one_of(c(continuous_vars[regexpr("^(hh_)",continuous_vars)>0],
+                             proportion_vars[regexpr("^(hh_)",proportion_vars)>0],
+                             grouped_vars[regexpr("^(hh_)",grouped_vars)>0]))),
+               list(n = ~sum(!is.na(.)))) %>% 
+  pivot_longer(names_to="variable",values_to="n",cols=everything()) %>% 
+  mutate(variable = str_replace(variable,"_n$",""))
+
+household_svysummary %>% 
+  left_join(household_count,
+            by=c("variable")) %>% 
+
+write_csv(.,"elsa/summary household table.csv")
 
 # Husbands summary ----------
 husbands_svy <- couples  %>% 

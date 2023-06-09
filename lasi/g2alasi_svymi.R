@@ -113,10 +113,8 @@ pred = mi_null$predictorMatrix
 
 pred[c("coupleid","hhid","w_personid","h_personid","h_sampleweight","state","psu"),] <- 0
 pred[,c("coupleid","hhid","w_personid","h_personid","h_sampleweight","state","psu")] <- 0
+method[c("coupleid","hhid","w_personid","h_personid","h_sampleweight","state","psu")] <- ""
 
-# Do not impute and do not use for imputation ------
-pred[c("w_htn","h_htn"),] <-0
-pred[,c("w_htn","h_htn")] <-0
 
 # Impute via equation and do not use for imputation , --------
 method["hh_lengthmar_ge10"] <- "~I((hh_lengthmar>=10)*1)"

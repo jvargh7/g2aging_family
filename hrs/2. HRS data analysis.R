@@ -1,8 +1,16 @@
 setwd("E:/OneDrive/spouse concord China US India/Data")
 
-coupleHRS <- read.csv("coupleHRS.csv")
+if(Sys.info()["user"] == "JVARGH7"){
+  coupleHRS <- read.csv(paste0(path_g2a_family_folder,"/working/hrs/coupleHRS.csv"))
+  
+}else{
+  coupleHRS <- read.csv("coupleHRS.csv")
+  
+}
 coupleHRS <- coupleHRS[, -1]
 colnames(coupleHRS)
+summary(coupleHRS$h_age - coupleHRS$w_age)
+mean(coupleHRS$h_age < 45 | coupleHRS$w_age < 45)
 
 library(car)
 library(tidyverse)
@@ -237,18 +245,26 @@ saveRDS(mi_dfs, "G2A HRS Couples mi_dfs.RDS")
 
 
 
-#----------------------------------------------
+# Poisson with MI data ----------------------------------------------
 #Poisson with MI data
-mi_dfs <- readRDS("G2A HRS Couples mi_dfs.RDS")
-
-require(mice)
-require(srvyr)
-require(survey)
-
-source("g2ahrs_poisson regression equations.R")
-
-#check if I have the same variables in this function
-colnames(mi_dfs$data)
+if(Sys.info()["user"] == "JVARGH7"){
+  mi_dfs <- readRDS(paste0(path_g2a_family_folder,"/working/hrs/G2A HRS Couples mi_dfs.RDS"))
+  source("C:/code/external/functions/survey/mice_coef_svyglm.R")
+  source("hrs/g2ahrs_poisson regression equations.R")
+  
+}else{
+  mi_dfs <- readRDS("G2A HRS Couples mi_dfs.RDS")
+  
+  require(mice)
+  require(srvyr)
+  require(survey)
+  
+  source("g2ahrs_poisson regression equations.R")
+  source("mice_coef_svyglm.R")
+  #check if I have the same variables in this function
+  colnames(mi_dfs$data)
+  
+}
 
 
 # Run Poisson Regression ------------
@@ -264,6 +280,8 @@ for(i in 1:mi_dfs$m){
                      weight = r_indweight,
                      nest = TRUE,
                      variance = "YG",pps = "brewer");
+  overall_w0[[i]] = svyglm(w0,design=svy_des,family=quasipoisson());
+  overall_h0[[i]] = svyglm(h0,design=svy_des,family=quasipoisson());
   overall_w1[[i]] = svyglm(w1,design=svy_des,family=quasipoisson());
   overall_h1[[i]] = svyglm(h1,design=svy_des,family=quasipoisson());
   overall_w2[[i]] = svyglm(w2,design=svy_des,family=quasipoisson());
@@ -276,17 +294,22 @@ for(i in 1:mi_dfs$m){
   overall_h5[[i]] = svyglm(h5,design=svy_des,family=quasipoisson());
   overall_w6[[i]] = svyglm(w6,design=svy_des,family=quasipoisson());
   overall_h6[[i]] = svyglm(h6,design=svy_des,family=quasipoisson());
-  
+  overall_w7[[i]] = svyglm(w7,design=svy_des,family=quasipoisson());
+  overall_h7[[i]] = svyglm(h7,design=svy_des,family=quasipoisson());
+  overall_w8[[i]] = svyglm(w8,design=svy_des,family=quasipoisson());
+  overall_h8[[i]] = svyglm(h8,design=svy_des,family=quasipoisson());
   
   gc();rm(df);rm(svy_des)
 }
 
 # Pooling coefficients ------------
-source("mice_coef_svyglm.R")
+
 # Check https://github.com/jvargh7/functions/blob/main/survey/mice_coef_svyglm.R
 # You would also have to download the following:
 # a. https://github.com/jvargh7/functions/blob/main/imputation/adjusted_ci.R
 # b. https://github.com/jvargh7/functions/tree/main/preprocessing
+overall_w0_out = mice_coef_svyglm(overall_w0)
+overall_h0_out = mice_coef_svyglm(overall_h0)
 overall_w1_out = mice_coef_svyglm(overall_w1)
 overall_h1_out = mice_coef_svyglm(overall_h1)
 overall_w2_out = mice_coef_svyglm(overall_w2)
@@ -299,8 +322,15 @@ overall_w5_out = mice_coef_svyglm(overall_w5)
 overall_h5_out = mice_coef_svyglm(overall_h5)
 overall_w6_out = mice_coef_svyglm(overall_w6)
 overall_h6_out = mice_coef_svyglm(overall_h6)
+overall_w7_out = mice_coef_svyglm(overall_w7)
+overall_h7_out = mice_coef_svyglm(overall_h7)
+overall_w8_out = mice_coef_svyglm(overall_w8)
+overall_h8_out = mice_coef_svyglm(overall_h8)
 
-bind_rows(
+
+g2al03_poisson_regression_output <- bind_rows(
+  overall_w0_out %>% mutate(model = "W0"),
+  overall_h0_out %>% mutate(model = "H0"),
   overall_w1_out %>% mutate(model = "W1"),
   overall_h1_out %>% mutate(model = "H1"),
   overall_w2_out %>% mutate(model = "W2"),
@@ -312,10 +342,22 @@ bind_rows(
   overall_w5_out %>% mutate(model = "W4"),
   overall_h5_out %>% mutate(model = "H4"),
   overall_w6_out %>% mutate(model = "W6"),
-  overall_h6_out %>% mutate(model = "H6")
+  overall_h6_out %>% mutate(model = "H6"),
+  overall_w7_out %>% mutate(model = "W7"),
+  overall_h7_out %>% mutate(model = "H7"),
+  overall_w8_out %>% mutate(model = "W8"),
+  overall_h8_out %>% mutate(model = "H8")
   
-) %>% 
-  write_csv(.,"g2al03_poisson regression with multiple imputation.csv")
+) 
+
+if(Sys.info()["user"] == "JVARGH7"){
+  g2al03_poisson_regression_output %>% 
+    write_csv(.,"hrs/g2ah03_poisson regression with multiple imputation.csv")
+  
+}else{
+  g2al03_poisson_regression_output %>% 
+    write_csv(.,"g2al03_poisson regression with multiple imputation.csv")
+}
 
 source("mice_contrasts_svyglm.R")
 # Check: https://github.com/jvargh7/functions/blob/main/survey/mice_contrasts_svyglm.R

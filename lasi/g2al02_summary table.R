@@ -3,6 +3,9 @@ source("C:/code/external/functions/survey/svysummary.R")
 
 source("lasi/g2alasi_analytic sample.R")
 
+summary(couples$w_age - couples$h_age)
+mean(couples$h_age < 45 | couples$w_age < 45)
+
 continuous_vars <- c(paste0(rep(c("w_","h_"),each=14),
                           c("sbp","dbp","glucose","weight","height",
                             "bmi","waistcircumference","hipcircumference",

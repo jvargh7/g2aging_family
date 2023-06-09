@@ -5,39 +5,39 @@ library(readr)
 
 hrs <- read_csv("hrs/hrs_contrasts for poisson regression with multiple imputation.csv") %>% 
   mutate(outcome = "Hypertension",
-         survey = "HRS")
+         survey = "USA")
 
 hrs_main <- read_csv("hrs/hrs_poisson regression with multiple imputation.csv") %>% 
   dplyr::filter(model %in% c("W1","H1"),iv %in% c("w_htn","h_htn")) %>% 
   mutate(outcome = "Hypertension",
          label = "Overall",
-         survey = "HRS")
+         survey = "USA")
 
 
 charls <- read_csv("charls/g2ac03_contrasts for poisson regression with multiple imputation.csv") %>% 
   mutate(outcome = "Hypertension",
-         survey = "CHARLS")
+         survey = "China")
 
 charls_main <- read_csv("charls/g2ac03_poisson regression with multiple imputation.csv") %>% 
   dplyr::filter(model %in% c("W1","H1"),iv %in% c("w_htn","h_htn")) %>% 
   mutate(outcome = "Hypertension",
          label = "Overall",
-         survey = "CHARLS")
+         survey = "China")
 
 
 lasi <- read_csv("lasi/g2al03_contrasts for poisson regression with multiple imputation.csv") %>% 
   mutate(outcome = "Hypertension",
-         survey = "LASI")
+         survey = "India")
 
 lasi_main <- read_csv("lasi/g2al03_poisson regression with multiple imputation.csv") %>% 
   dplyr::filter(model %in% c("W1","H1"),iv %in% c("w_htn","h_htn")) %>% 
   mutate(outcome = "Hypertension",
          label = "Overall",
-         survey = "LASI") 
+         survey = "India") 
 
 elsa <- read_csv("elsa/g2ae03_contrasts for poisson regression with multiple imputation.csv") %>% 
   mutate(outcome = "Hypertension",
-         survey = "ELSA") %>% 
+         survey = "England") %>% 
   bind_rows(hrs %>% 
               dplyr::filter(str_detect(term,"lengthmar")) %>% 
               mutate(survey = "ELSA",
@@ -48,7 +48,7 @@ elsa_main <- read_csv("elsa/g2ae03_poisson regression with multiple imputation.c
   dplyr::filter(model %in% c("W1","H1"),iv %in% c("w_htn","h_htn")) %>% 
   mutate(outcome = "Hypertension",
          label = "Overall",
-         survey = "ELSA")
+         survey = "England")
 
 contrast_map <- readxl::read_excel("lasi/LASI Contrast Map.xlsx") %>% 
   dplyr::filter(!is.na(label))
@@ -93,7 +93,7 @@ tab_stratum %>%
   
   write_csv(.,"table_emm analysis results.csv")
 
-figA <- tab_stratum %>% dplyr::filter(outcome == "Hypertension",survey == "HRS") %>% 
+figA <- tab_stratum %>% dplyr::filter(outcome == "Hypertension",survey == "USA") %>% 
   ggplot(data=.,
          aes(x=est,y=label,
              xmin=lci,xmax =uci,
@@ -112,9 +112,9 @@ figA <- tab_stratum %>% dplyr::filter(outcome == "Hypertension",survey == "HRS")
         axis.text = element_text(size = 10),
         axis.title = element_text(size = 10)) +
   theme(legend.position="left")+
-  labs(title="HRS")
+  labs(title="USA")
 
-figB <- tab_stratum %>% dplyr::filter(outcome == "Hypertension",survey == "CHARLS") %>% 
+figB <- tab_stratum %>% dplyr::filter(outcome == "Hypertension",survey == "China") %>% 
   ggplot(data=.,
          aes(x=est,y=label,
              xmin=lci,xmax =uci,
@@ -134,9 +134,9 @@ figB <- tab_stratum %>% dplyr::filter(outcome == "Hypertension",survey == "CHARL
         axis.text.y = element_blank(), # This removes y axis labels for CHARLS
         axis.title = element_text(size = 10))  +
   theme(legend.position="left")+
-  labs(title="CHARLS")
+  labs(title="China")
 
-figC <- tab_stratum %>% dplyr::filter(outcome == "Hypertension",survey == "LASI") %>% 
+figC <- tab_stratum %>% dplyr::filter(outcome == "Hypertension",survey == "India") %>% 
   ggplot(data=.,
          aes(x=est,y=label,
              xmin=lci,xmax =uci,
@@ -156,10 +156,10 @@ figC <- tab_stratum %>% dplyr::filter(outcome == "Hypertension",survey == "LASI"
         axis.text.y = element_blank(), # This removes y axis labels for LASI
         axis.title = element_text(size = 10))  +
   theme(legend.position="left")+
-  labs(title="LASI")
+  labs(title="India")
 
 
-figD <- tab_stratum %>% dplyr::filter(outcome == "Hypertension",survey == "ELSA") %>% 
+figD <- tab_stratum %>% dplyr::filter(outcome == "Hypertension",survey == "England") %>% 
   ggplot(data=.,
          aes(x=est,y=label,
              xmin=lci,xmax =uci,
@@ -179,7 +179,7 @@ figD <- tab_stratum %>% dplyr::filter(outcome == "Hypertension",survey == "ELSA"
         axis.text.y = element_blank(), # This removes y axis labels for LASI
         axis.title = element_text(size = 10))  +
   theme(legend.position="left")+
-  labs(title="ELSA")
+  labs(title="England")
 
 require(ggpubr)
 # jpeg("Supplemental Figure 2. combined CI.jpeg", width = 10, height = 6, units = 'in', res = 600)

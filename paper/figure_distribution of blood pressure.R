@@ -26,7 +26,7 @@ pooled <- bind_rows(
     dplyr::select(coupleid,h_sbp,h_dbp,w_sbp,w_dbp,h_sampleweight) %>% 
     mutate(cohort = 4,
            w_sampleweight = h_sampleweight))  %>% 
-  mutate(cohort = factor(cohort,levels=c(1:4),labels=c("HRS","ELSA","CHARLS","LASI")))
+  mutate(cohort = factor(cohort,levels=c(1:4),labels=c("USA","England","China","India")))
 
 # Common parameters ------------
 
